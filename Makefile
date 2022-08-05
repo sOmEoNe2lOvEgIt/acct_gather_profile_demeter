@@ -20,7 +20,7 @@ $(NAME):
 		mv src/*.o ./.libs/
 		mv -f .deps/prep_demeter.Tpo .deps/prep_demeter.Plo
 		rm -fr .libs/prep_demeter.a .libs/prep_demeter.la .libs/prep_demeter.lai prep_demeter.so
-		gcc -shared .libs/prep_demeter.o -O2 -pthread -O0 -pthread -Wl,-soname -Wl,prep_demeter.so -o prep_demeter.so
+		gcc -shared .libs/demeter.o -O2 -pthread -O0 -pthread -Wl,-soname -Wl,prep_demeter.so -o prep_demeter.so
 
 all:	$(NAME)
 
