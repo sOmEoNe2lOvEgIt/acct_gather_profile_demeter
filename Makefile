@@ -5,30 +5,30 @@
 ## Wow, such make, much file!
 ##
 
-SRC =	src/demeter.c\
+SLURM_ROOT_DIR = /usr
+SLURM_INC_DIR = /root/SLURM/slurm.build
+SLURM_LIB_DIR = /usr/lib64/slurm
+SLURM_BUILD = 21.08.8-2
+SLURM_BUILD_DIR = /root/rpmbuild/BUILD/slurm-$(SLURM_BUILD)
 
-CFLAGS = -DHAVE_CONFIG_H -Wall -Wextra -Wpedantic -g -O2 -pthread -fno-gcse -g -O0 -fno-strict-aliasing -MT prep_demeter.lo -MD -MP -MF .deps/prep_demeter.Tpo -fPIC -DPIC
+PLUGIN_TYPE = prep
+PLUGIN_NAME = demeter
+PLUGIN_FILE = $(PLUGIN_TYPE)_$(PLUGIN_NAME).so
 
-LDFLAGS = -lslurm
+SRC_FILE = demeter.c
 
-OBJ =	$(SRC:.c=.o)
+CC      = gcc
+CFLAGS  ?= -Wall -fPIC -g -I$(SLURM_INC_DIR) -I$(SLURM_BUILD_DIR) 
+LDFLAGS ?= --shared -L.
 
-NAME =	prep_demeter
+all: $(PLUGIN_FILE)
 
-$(NAME):
-		gcc -I ./include -I ~/SLURM/slurm.build -o $(OBJ) -c $(SRC) $(CFLAGS)
-		mv src/*.o ./.libs/
-		mv -f .deps/prep_demeter.Tpo .deps/prep_demeter.Plo
-		rm -fr .libs/prep_demeter.a .libs/prep_demeter.la .libs/prep_demeter.lai prep_demeter.so
-		gcc -shared .libs/*.o -O2 -pthread -O0 -pthread -Wl,-soname -Wl,prep_demeter.so -o prep_demeter.so
+default: $(PLUGIN_FILE)
 
-all:	$(NAME)
+$(PLUGIN_FILE): $(SRC_FILE)
+	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@
 
 clean:
-		@rm -f $(OBJ)
-		@rm -f prep_demeter.so
+	rm -f $(PLUGIN_FILE)
 
-fclean:	clean
-		@rm -f $(NAME)
-
-re:		clean   all
+mrproper: clean
