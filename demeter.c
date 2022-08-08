@@ -35,18 +35,25 @@ char *exclude_keys_prolog = "";
 char *exclude_keys_epilog = "";
 static pthread_mutex_t  plugin_log_lock = PTHREAD_MUTEX_INITIALIZER;
 
-extern int init (void)
+// CALLED BEFORE JOB
+//___________________________________________________________________________________________________________________________________________
+extern int prep_p_prolog(job_env_t *job_env, slurm_cred_t *cred)
 {
-    slurm_info(PLUGIN_NAME "init\n");
-
+    slurm_info(PLUGIN_NAME "ProLog for job %u\n", job_env->jobid);
     return (SLURM_SUCCESS);
 }
 
-extern void fini (void)
+// CALLED AFTER JOB
+//___________________________________________________________________________________________________________________________________________
+extern int prep_p_epilog(job_env_t *job_env, slurm_cred_t *cred)
 {
-    slurm_info(PLUGIN_NAME "fini\n");
+    slurm_info(PLUGIN_NAME "EpiLog for job %u\n", job_env->jobid);
+    return (SLURM_SUCCESS);
 }
 
+
+// REQUIRED FUNCTIONS
+//___________________________________________________________________________________________________________________________________________
 extern void prep_p_register_callbacks(prep_callbacks_t *callbacks)
 {
     if (!(prolog_slurmctld_callback = callbacks->prolog_slurmctld))
@@ -78,18 +85,9 @@ extern void prep_p_required(prep_call_type_t type, bool *required)
 	return;
 }
 
-extern int prep_p_prolog(job_env_t *job_env, slurm_cred_t *cred)
-{
-    slurm_info(PLUGIN_NAME "ProLog for job %u\n", job_env->jobid);
-    return (SLURM_SUCCESS);
-}
 
-extern int prep_p_epilog(job_env_t *job_env, slurm_cred_t *cred)
-{
-    slurm_info(PLUGIN_NAME "EpiLog for job %u\n", job_env->jobid);
-    return (SLURM_SUCCESS);
-}
-
+// UNUSED FUNCTIONS
+//___________________________________________________________________________________________________________________________________________
 extern int prep_p_prolog_slurmctld(int rc, uint32_t job_id)
 {
     slurm_info(PLUGIN_NAME "ProLog Slurmctld\n");
@@ -100,4 +98,16 @@ extern int prep_p_epilog_slurmctld(int rc, uint32_t job_id)
 {
     slurm_info(PLUGIN_NAME "EpiLog Slurmctld\n");
     return (SLURM_SUCCESS);
+}
+
+extern int init (void)
+{
+    slurm_info(PLUGIN_NAME "init\n");
+
+    return (SLURM_SUCCESS);
+}
+
+extern void fini (void)
+{
+    slurm_info(PLUGIN_NAME "fini\n");
 }
