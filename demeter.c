@@ -3,43 +3,42 @@
 // File description:
 // Wow, such plugin, much data!
 //___________________________________________________________________________________________________________________________________________
-
-#include <stdarg.h>
-#include <unistd.h>
+// INCLUDES
+//___________________________________________________________________________________________________________________________________________
 #include <inttypes.h>
-
+#include <stdlib.h>
 #include "slurm/slurm.h"
 #include "slurm/slurm_errno.h"
 #include "src/common/prep.h"
-#include "src/common/macros.h"
-#include "src/common/xmalloc.h"
-#include "src/common/xstring.h"
-#include "src/common/parse_time.h"
-#include "src/common/uid.h"
+#include "demeter.h"
 
-#define PLUGIN_NAME "PrEp-demeter: "
-#define STRING_LEN 1024
-
+// GLOBAL VARIABLES
+//___________________________________________________________________________________________________________________________________________
+//setting required variables for slurm:
+#define PLUGIN_NAME "[prep_demeter]>"
 const char plugin_name[] = "Demeter godess of data harvest";
 const char plugin_type[] = "prep/demeter";
 const uint32_t plugin_version = SLURM_VERSION_NUMBER;
-
+//File in which the parsed logs of the plugin will be outputted (this path will later be settable in a conf file):
+const char log_file_path[] = "/var/log/demeter.log";
+//Disable the plugin for controller:
 static bool have_prolog_slurmctld = false;
 static bool have_epilog_slurmctld = false;
-
 void (*prolog_slurmctld_callback)(int rc, uint32_t job_id) = NULL;
 void (*epilog_slurmctld_callback)(int rc, uint32_t job_id) = NULL;
-
-char *prefix = "JOB_RECORD__";
-char *exclude_keys_prolog = "";
-char *exclude_keys_epilog = "";
-static pthread_mutex_t  plugin_log_lock = PTHREAD_MUTEX_INITIALIZER;
 
 // CALLED BEFORE JOB
 //___________________________________________________________________________________________________________________________________________
 extern int prep_p_prolog(job_env_t *job_env, slurm_cred_t *cred)
 {
+	char *jobid = NULL;
+
     slurm_info(PLUGIN_NAME "ProLog for job %u\n", job_env->jobid);
+	write_log_to_file(log_file_path, get_time_str());
+	write_log_to_file(log_file_path, "[Prolog for job with id ");
+	// sprintf(jobid, "%u", job_env->jobid); <- this is not working, why?
+	// write_log_to_file(log_file_path, jobid);
+	write_log_to_file(log_file_path, "]\n");
     return (SLURM_SUCCESS);
 }
 
@@ -47,10 +46,16 @@ extern int prep_p_prolog(job_env_t *job_env, slurm_cred_t *cred)
 //___________________________________________________________________________________________________________________________________________
 extern int prep_p_epilog(job_env_t *job_env, slurm_cred_t *cred)
 {
+	char *jobid = NULL;
+
     slurm_info(PLUGIN_NAME "EpiLog for job %u\n", job_env->jobid);
+	write_log_to_file(log_file_path, get_time_str());
+	write_log_to_file(log_file_path, "[Epilog for job with id ");
+	sprintf(jobid, "%u", job_env->jobid);
+	write_log_to_file(log_file_path, jobid);
+	write_log_to_file(log_file_path, "]\n");
     return (SLURM_SUCCESS);
 }
-
 
 // REQUIRED FUNCTIONS
 //___________________________________________________________________________________________________________________________________________
@@ -65,6 +70,7 @@ extern void prep_p_register_callbacks(prep_callbacks_t *callbacks)
 extern void prep_p_required(prep_call_type_t type, bool *required)
 {
 	*required = false;
+
 	switch (type) {
 	case PREP_PROLOG_SLURMCTLD:
 		if (running_in_slurmctld())
@@ -85,6 +91,34 @@ extern void prep_p_required(prep_call_type_t type, bool *required)
 	return;
 }
 
+// PLUGIN INITIALIZATION AND EXIT FUNCTIONS
+//___________________________________________________________________________________________________________________________________________
+extern int init (void)
+{
+	FILE *log_file;
+	char *date_time = get_time_str();
+
+    slurm_info(PLUGIN_NAME "[STARTING]");
+	log_file = init_log_file(log_file_path);
+	if (log_file == NULL)
+		return (SLURM_ERROR);
+	fprintf(log_file, "[prep_demeter]>[demeter started at %s]\n", date_time);
+	fclose(log_file);
+	slurm_info(PLUGIN_NAME "[STARTED]");
+    return (SLURM_SUCCESS);
+}
+
+extern void fini (void)
+{
+    slurm_info(PLUGIN_NAME "[STOPPING]");
+}
+
+// TOOLS
+//___________________________________________________________________________________________________________________________________________
+void my_slurm_info(char *message)
+{
+	slurm_info(PLUGIN_NAME "%s", message);
+}
 
 // UNUSED FUNCTIONS
 //___________________________________________________________________________________________________________________________________________
@@ -98,16 +132,4 @@ extern int prep_p_epilog_slurmctld(int rc, uint32_t job_id)
 {
     slurm_info(PLUGIN_NAME "EpiLog Slurmctld\n");
     return (SLURM_SUCCESS);
-}
-
-extern int init (void)
-{
-    slurm_info(PLUGIN_NAME "init\n");
-
-    return (SLURM_SUCCESS);
-}
-
-extern void fini (void)
-{
-    slurm_info(PLUGIN_NAME "fini\n");
 }
