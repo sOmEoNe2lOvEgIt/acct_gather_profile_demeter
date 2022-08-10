@@ -92,6 +92,7 @@ extern int init (void)
 
     slurm_info(PLUGIN_NAME "starting");
 	log_file = init_log_file(log_file_path, false);
+	//check if log file is writable:
 	if (log_file == NULL)
 		return (SLURM_ERROR);
 	fclose(log_file);

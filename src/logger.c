@@ -11,6 +11,8 @@
 #include "src/common/log.h"
 #include "demeter.h"
 
+// LOGGING TOOLS
+//___________________________________________________________________________________________________________________________________________
 FILE *init_log_file(const char *log_file_path, bool silent)
 {
     FILE *log_file;
@@ -21,6 +23,7 @@ FILE *init_log_file(const char *log_file_path, bool silent)
             my_slurm_info ("error: can't open log file. Will try to open log file at \"/tmp/demeter.log\".");
         log_file = fopen("/tmp/demeter.log", "a");
     }
+    //substitut log file if chosen one is not writable (although this one may not be writable either)
     if (log_file == NULL) {
         my_slurm_error ("FATAL: can't open log file at /tmp/demeter.log either. Exiting.");
         return (NULL);
@@ -28,6 +31,8 @@ FILE *init_log_file(const char *log_file_path, bool silent)
     return (log_file);
 }
 
+//LOGGING FUNCTIONS
+//___________________________________________________________________________________________________________________________________________ 
 int write_log_to_file(const char *log_file_path, char *message,
 enum log_format_types format, uint verbose)
 {
@@ -38,6 +43,7 @@ enum log_format_types format, uint verbose)
         my_slurm_info ("error : can't write to log file, log file is NULL.");
         return (1);
     }
+    //different styles of logs
     switch (format)
     {
         case FANCY:
@@ -58,6 +64,8 @@ enum log_format_types format, uint verbose)
     return (0);
 }
 
+// SPECIFIC LOGGING FUNCTIONS
+//___________________________________________________________________________________________________________________________________________
 void prolog_message(const char *log_file_path, uint32_t nb_jobid, enum log_format_types format)
 {
     char message[50];
