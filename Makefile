@@ -15,11 +15,11 @@ PLUGIN_TYPE = prep
 PLUGIN_NAME = demeter
 PLUGIN_FILE = $(PLUGIN_TYPE)_$(PLUGIN_NAME).so
 
-SRC_FILES = demeter.c		\
-	src/gather_cgroup.c		\
-	src/gather_logs.c		\
-	src/logger.c			\
-	src/tools/get_time_str.c\
+SRC_FILES = src/demeter.c		\
+	src/gather_cgroup.c			\
+	src/gather_logs.c			\
+	src/logger.c				\
+	src/tools/get_time_str.c	\
 
 CC      = gcc
 CFLAGS  ?= -Wall -fPIC -g -I$(SLURM_INC_DIR) -I$(SLURM_BUILD_DIR) -Iinclude
@@ -35,4 +35,4 @@ $(PLUGIN_FILE): $(SRC_FILES)
 clean:
 	rm -f $(PLUGIN_FILE)
 
-mrproper: clean
+re: clean all

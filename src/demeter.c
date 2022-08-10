@@ -7,6 +7,7 @@
 //___________________________________________________________________________________________________________________________________________
 #include <inttypes.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "slurm/slurm.h"
 #include "slurm/slurm_errno.h"
 #include "src/common/prep.h"
@@ -31,14 +32,8 @@ void (*epilog_slurmctld_callback)(int rc, uint32_t job_id) = NULL;
 //___________________________________________________________________________________________________________________________________________
 extern int prep_p_prolog(job_env_t *job_env, slurm_cred_t *cred)
 {
-	char *jobid = NULL;
-
     slurm_info(PLUGIN_NAME "ProLog for job %u\n", job_env->jobid);
-	write_log_to_file(log_file_path, get_time_str());
-	write_log_to_file(log_file_path, "[Prolog for job with id ");
-	// sprintf(jobid, "%u", job_env->jobid); <- this is not working, why?
-	// write_log_to_file(log_file_path, jobid);
-	write_log_to_file(log_file_path, "]\n");
+	prolog_message(log_file_path, job_env->jobid);
     return (SLURM_SUCCESS);
 }
 
@@ -46,14 +41,8 @@ extern int prep_p_prolog(job_env_t *job_env, slurm_cred_t *cred)
 //___________________________________________________________________________________________________________________________________________
 extern int prep_p_epilog(job_env_t *job_env, slurm_cred_t *cred)
 {
-	char *jobid = NULL;
-
     slurm_info(PLUGIN_NAME "EpiLog for job %u\n", job_env->jobid);
-	write_log_to_file(log_file_path, get_time_str());
-	write_log_to_file(log_file_path, "[Epilog for job with id ");
-	sprintf(jobid, "%u", job_env->jobid);
-	write_log_to_file(log_file_path, jobid);
-	write_log_to_file(log_file_path, "]\n");
+	epilog_message(log_file_path, job_env->jobid);
     return (SLURM_SUCCESS);
 }
 
@@ -81,6 +70,9 @@ extern void prep_p_required(prep_call_type_t type, bool *required)
 			*required = false;
 		break;
 	case PREP_PROLOG:
+		if (running_in_slurmd())
+			*required = true;
+		break;
 	case PREP_EPILOG:
 		if (running_in_slurmd())
 			*required = true;
@@ -96,14 +88,14 @@ extern void prep_p_required(prep_call_type_t type, bool *required)
 extern int init (void)
 {
 	FILE *log_file;
-	char *date_time = get_time_str();
 
     slurm_info(PLUGIN_NAME "[STARTING]");
 	log_file = init_log_file(log_file_path);
 	if (log_file == NULL)
 		return (SLURM_ERROR);
-	fprintf(log_file, "[prep_demeter]>[demeter started at %s]\n", date_time);
 	fclose(log_file);
+	name_date(log_file_path, FANCY);
+	write_log_to_file(log_file_path, "[Demeter started]\n");
 	slurm_info(PLUGIN_NAME "[STARTED]");
     return (SLURM_SUCCESS);
 }
@@ -111,6 +103,9 @@ extern int init (void)
 extern void fini (void)
 {
     slurm_info(PLUGIN_NAME "[STOPPING]");
+	name_date(log_file_path, FANCY);
+	write_log_to_file(log_file_path, "[Demeter stopped]\n");
+	slurm_info(PLUGIN_NAME "[STOPPED]");
 }
 
 // TOOLS
