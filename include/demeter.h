@@ -36,7 +36,7 @@ char *get_time_str(void);
 // LOGGER FUNCTIONS
 //___________________________________________________________________________________________________________________________________________
 
-FILE *init_log_file(const char *log_file_path);
+FILE *init_log_file(const char *log_file_path, bool silent);
 int write_log_to_file(const char *log_file_path, char *message,
 enum log_format_types format, uint verbose);
 void prolog_message(const char *log_file_path, uint32_t nb_jobid, enum log_format_types format);

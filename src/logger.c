@@ -11,13 +11,14 @@
 #include "src/common/log.h"
 #include "demeter.h"
 
-FILE *init_log_file(const char *log_file_path)
+FILE *init_log_file(const char *log_file_path, bool silent)
 {
     FILE *log_file;
 
     log_file = fopen(log_file_path, "a");
     if (log_file == NULL) {
-        my_slurm_info ("error: can't open log file at default log file path. Will try to open log file at /tmp/demeter.log .");
+        if (!silent)
+            my_slurm_info ("error: can't open log file. Will try to open log file at \"/tmp/demeter.log\".");
         log_file = fopen("/tmp/demeter.log", "a");
     }
     if (log_file == NULL) {
@@ -32,7 +33,7 @@ enum log_format_types format, uint verbose)
 {
     FILE *log_file;
 
-    log_file=init_log_file(log_file_path);
+    log_file=init_log_file(log_file_path, true);
     if (log_file == NULL) {
         my_slurm_info ("error : can't write to log file, log file is NULL.");
         return (1);
@@ -43,7 +44,7 @@ enum log_format_types format, uint verbose)
             fprintf(log_file, "[%s]:[prep_demeter]> %s\n", get_time_str(), message);
             break;
         case SIMPLE:
-            fprintf(log_file, "%s| prep_demeter: %s\n", get_time_str(), message);
+            fprintf(log_file, "%s	| prep_demeter: %s\n", get_time_str(), message);
             break;
         case SYSTEM:
             fprintf(log_file, "prep_demeter: %s\n", message);

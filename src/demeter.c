@@ -17,7 +17,7 @@
 //___________________________________________________________________________________________________________________________________________
 //setting required variables for slurm:
 #define PLUGIN_NAME "prep/demeter: "
-const char plugin_name[] = "Demeter godess of data harvest";
+const char plugin_name[] = "Demeter godess of data harvest.";
 const char plugin_type[] = "prep/demeter";
 const uint32_t plugin_version = SLURM_VERSION_NUMBER;
 //Disable the plugin for controller:
@@ -91,12 +91,12 @@ extern int init (void)
 	FILE *log_file;
 
     slurm_info(PLUGIN_NAME "starting");
-	log_file = init_log_file(log_file_path);
+	log_file = init_log_file(log_file_path, false);
 	if (log_file == NULL)
 		return (SLURM_ERROR);
 	fclose(log_file);
 	write_log_to_file(log_file_path, "[Demeter started]", format, 1);
-	slurm_info(PLUGIN_NAME "started");
+	slurm_info(PLUGIN_NAME "started, thank god!");
     return (SLURM_SUCCESS);
 }
 
