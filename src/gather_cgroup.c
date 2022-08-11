@@ -30,13 +30,15 @@ static void get_mem_max_usage(cgroup_data_t *cgroup_data, job_env_t *job_env)
     FILE *file;
 
     sprintf(cgroup_path, "/sys/fs/cgroup/memory/slurm/uid_%u/job_%u/memory.max_usage_in_bytes", job_env->uid, job_env->jobid);
-    file = fopen(cgroup_path, "r");
+    //my_slurm_debug(cgroup_path, 3);
+    file = fopen(cgroup_path, "r"); // <--- This never works because the file is gone at this point... IDK what to do.
     if (fopen(cgroup_path, "r") == NULL)
     {
         my_slurm_error("fopen failed");
         return;
     }
     fgets(res, 50, file);
+    my_slurm_debug(res, 3);
     cgroup_data->mem_max_usage_bytes = atoi(res);
     fclose(file);
 }
