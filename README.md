@@ -1,2 +1,2 @@
 # prep_demeter
-Slurm plugin for harvesting data on your cluster's nodes.
+Slurm plugin for harvesting data on your cluster's nodes like info about ram usage, oom state, parsed logs, etc...
