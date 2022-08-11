@@ -5,6 +5,7 @@
 //___________________________________________________________________________________________________________________________________________
 
 #include "slurm/slurm.h"
+#include "src/slurmd/slurmd/slurmd.h"
 #include <inttypes.h>
 #include <string.h>
 
@@ -31,6 +32,7 @@ typedef struct cgroup_data_s{
 //___________________________________________________________________________________________________________________________________________
 void my_slurm_info(char *message);
 void my_slurm_error(char *message);
+void my_slurm_debug(char *message, int level);
 char *get_time_str(void);
 
 // LOGGER FUNCTIONS
@@ -41,5 +43,10 @@ int write_log_to_file(const char *log_file_path, char *message,
 enum log_format_types format, uint verbose);
 void prolog_message(const char *log_file_path, uint32_t nb_jobid, enum log_format_types format);
 void epilog_message(const char *log_file_path, uint32_t nb_jobid, enum log_format_types format);
+
+// CGROUP FUNCTIONS
+//___________________________________________________________________________________________________________________________________________
+
+cgroup_data_t *gather_cgroup(job_env_t *job_env);
 
 #endif /* !DEMETER_H_ */

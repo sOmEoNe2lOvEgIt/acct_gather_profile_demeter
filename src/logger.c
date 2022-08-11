@@ -20,12 +20,12 @@ FILE *init_log_file(const char *log_file_path, bool silent)
     log_file = fopen(log_file_path, "a");
     if (log_file == NULL) {
         if (!silent)
-            my_slurm_info ("error: can't open log file. Will try to open log file at \"/tmp/demeter.log\".");
+            my_slurm_debug("error: can't open log file. Will try to open log file at \"/tmp/demeter.log\".", 2);
         log_file = fopen("/tmp/demeter.log", "a");
     }
     //substitut log file if chosen one is not writable (although this one may not be writable either)
     if (log_file == NULL) {
-        my_slurm_error ("FATAL: can't open log file at /tmp/demeter.log either. Exiting.");
+        my_slurm_error("FATAL: can't open log file at /tmp/demeter.log either. Exiting.");
         return (NULL);
     }
     return (log_file);
@@ -40,7 +40,7 @@ enum log_format_types format, uint verbose)
 
     log_file=init_log_file(log_file_path, true);
     if (log_file == NULL) {
-        my_slurm_info ("error : can't write to log file, log file is NULL.");
+        my_slurm_debug("error : can't write to log file, log file is NULL.", 2);
         return (1);
     }
     //different styles of logs
@@ -56,7 +56,7 @@ enum log_format_types format, uint verbose)
             fprintf(log_file, "prep_demeter: %s\n", message);
             break;
         default:
-            my_slurm_info ("error : invalid log format.");
+            my_slurm_debug("error : invalid log format.", 2);
             fclose(log_file);
             return (1);
     }
@@ -70,7 +70,7 @@ void prolog_message(const char *log_file_path, uint32_t nb_jobid, enum log_forma
 {
     char message[50];
 
-	sprintf(message, "epilog for job with id %u", nb_jobid);
+	sprintf(message, "prolog for job with id %u", nb_jobid);
     write_log_to_file(log_file_path, message, format, 0);
 }
 

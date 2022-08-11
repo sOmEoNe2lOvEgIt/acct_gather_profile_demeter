@@ -33,7 +33,7 @@ const char log_file_path[] = "/var/log/demeter.log";
 //___________________________________________________________________________________________________________________________________________
 extern int prep_p_prolog(job_env_t *job_env, slurm_cred_t *cred)
 {
-    slurm_info(PLUGIN_NAME "prolog for job %u\n", job_env->jobid);
+    debug2(PLUGIN_NAME "prolog for job %u", job_env->jobid);
 	prolog_message(log_file_path, job_env->jobid, format);
     return (SLURM_SUCCESS);
 }
@@ -42,8 +42,13 @@ extern int prep_p_prolog(job_env_t *job_env, slurm_cred_t *cred)
 //___________________________________________________________________________________________________________________________________________
 extern int prep_p_epilog(job_env_t *job_env, slurm_cred_t *cred)
 {
-    slurm_info(PLUGIN_NAME "epilog for job %u\n", job_env->jobid);
+	cgroup_data_t *cgroup_data;
+
+    debug2(PLUGIN_NAME "epilog for job %u", job_env->jobid);
 	epilog_message(log_file_path, job_env->jobid, format);
+	cgroup_data = gather_cgroup(job_env);
+	//this is for debugging purposes, to be removed later:
+	debug3(PLUGIN_NAME "cgroup_data: %u", cgroup_data->mem_max_usage_bytes);
     return (SLURM_SUCCESS);
 }
 
@@ -59,24 +64,20 @@ extern void prep_p_register_callbacks(prep_callbacks_t *callbacks)
 
 extern void prep_p_required(prep_call_type_t type, bool *required)
 {
-	*required = false;
+	*required = true;
 
 	switch (type) {
 	case PREP_PROLOG_SLURMCTLD:
-		if (running_in_slurmctld())
-			*required = false;
+		*required = false;
 		break;
 	case PREP_EPILOG_SLURMCTLD:
-		if (running_in_slurmctld())
-			*required = false;
-		break;
-	case PREP_PROLOG:
-		if (running_in_slurmd())
-			*required = true;
+		*required = false;
 		break;
 	case PREP_EPILOG:
-		if (running_in_slurmd())
-			*required = true;
+		*required = true;
+		break;
+	case PREP_PROLOG:
+		*required = true;
 		break;
 	default:
 		return;
@@ -90,22 +91,22 @@ extern int init (void)
 {
 	FILE *log_file;
 
-    slurm_info(PLUGIN_NAME "starting");
+    debug(PLUGIN_NAME "starting");
 	log_file = init_log_file(log_file_path, false);
 	//check if log file is writable:
 	if (log_file == NULL)
 		return (SLURM_ERROR);
 	fclose(log_file);
 	write_log_to_file(log_file_path, "[Demeter started]", format, 1);
-	slurm_info(PLUGIN_NAME "started, thank god!");
+	debug(PLUGIN_NAME "started, thank god!");
     return (SLURM_SUCCESS);
 }
 
 extern void fini (void)
 {
-    slurm_info(PLUGIN_NAME "stopping");
+    debug(PLUGIN_NAME "stopping");
 	write_log_to_file(log_file_path, "[Demeter stopped]", format, 1);
-	slurm_info(PLUGIN_NAME "stopped");
+	debug(PLUGIN_NAME "stopped");
 }
 
 // TOOLS
@@ -113,6 +114,30 @@ extern void fini (void)
 void my_slurm_info(char *message)
 {
 	slurm_info(PLUGIN_NAME "%s", message);
+}
+
+void my_slurm_debug(char *message, int level)
+{
+	switch (level)
+	{
+	case 1:
+		debug(PLUGIN_NAME "%s", message);
+		break;
+	case 2:
+		debug2(PLUGIN_NAME "%s", message);
+		break;
+	case 3:
+		debug3(PLUGIN_NAME "%s", message);
+		break;
+	case 4:
+		debug4(PLUGIN_NAME "%s", message);
+		break;
+	case 5:
+		debug5(PLUGIN_NAME "%s", message);
+		break;
+	default:
+		break;
+	}
 }
 
 void my_slurm_error(char *message)
@@ -124,12 +149,12 @@ void my_slurm_error(char *message)
 //___________________________________________________________________________________________________________________________________________
 extern int prep_p_prolog_slurmctld(int rc, uint32_t job_id)
 {
-    slurm_info(PLUGIN_NAME "prolog Slurmctld");
+    my_slurm_debug("prolog Slurmctld (this shoudn't happend)", 2);
     return (SLURM_SUCCESS);
 }
 
 extern int prep_p_epilog_slurmctld(int rc, uint32_t job_id)
 {
-    slurm_info(PLUGIN_NAME "epilog Slurmctld");
+    my_slurm_debug("epilog Slurmctld (this shoudn't happend)", 2);
     return (SLURM_SUCCESS);
 }
