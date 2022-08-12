@@ -28,8 +28,13 @@ typedef struct cgroup_data_s{
     uint oom_kill;
 } cgroup_data_t;
 
+typedef struct job_env_sort_s{
+    int id;
+} job_env_sort_t;
+
 // TOOLS
 //___________________________________________________________________________________________________________________________________________
+
 void my_slurm_info(char *message);
 void my_slurm_error(char *message);
 void my_slurm_debug(char *message, int level);
@@ -48,5 +53,6 @@ void epilog_message(const char *log_file_path, uint32_t nb_jobid, enum log_forma
 //___________________________________________________________________________________________________________________________________________
 
 cgroup_data_t *gather_cgroup(job_env_t *job_env);
+
 
 #endif /* !DEMETER_H_ */
