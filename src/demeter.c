@@ -65,6 +65,7 @@ extern int acct_gather_profile_g_conf_set(s_p_hashtbl_t *tbl)
 extern int acct_gather_profile_p_node_step_start(stepd_step_rec_t* job)
 {
 	my_slurm_debug("acct_gather_profile_p_node_step_start", 3);
+	gather_cgroup(job->uid, job->array_job_id);
 	return (SLURM_SUCCESS);
 }
 

@@ -18,7 +18,7 @@ PLUGIN_FILE = $(PLUGIN_TYPE)_$(PLUGIN_NAME).so
 SRC_FILES = src/demeter.c			\
 	src/gatherers/gather_cgroup.c	\
 	src/gatherers/gather_logs.c		\
-	src/tools/logger.c					\
+	src/tools/logger.c				\
 	src/tools/get_time_str.c		\
 
 CC      = gcc

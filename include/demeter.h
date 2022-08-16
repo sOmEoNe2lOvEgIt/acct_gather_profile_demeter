@@ -52,7 +52,7 @@ void epilog_message(const char *log_file_path, uint32_t nb_jobid, enum log_forma
 // CGROUP FUNCTIONS
 //___________________________________________________________________________________________________________________________________________
 
-cgroup_data_t *gather_cgroup(job_env_t *job_env);
+cgroup_data_t *gather_cgroup(uint uid, uint jobid);
 
 
 #endif /* !DEMETER_H_ */
