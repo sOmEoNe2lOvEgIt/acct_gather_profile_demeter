@@ -11,7 +11,7 @@ SLURM_LIB_DIR = /usr/lib64/slurm
 SLURM_BUILD = 21.08.8-2
 SLURM_BUILD_DIR = /root/rpmbuild/BUILD/slurm-$(SLURM_BUILD)
 
-PLUGIN_TYPE = prep
+PLUGIN_TYPE = acct_gather_profile
 PLUGIN_NAME = demeter
 PLUGIN_FILE = $(PLUGIN_TYPE)_$(PLUGIN_NAME).so
 
