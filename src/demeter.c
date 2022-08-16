@@ -21,7 +21,7 @@ const char plugin_name[] = "Demeter godess of data harvest.";
 const char plugin_type[] = "acct_gather_profile/demeter";
 const uint32_t plugin_version = SLURM_VERSION_NUMBER;
 //Settings for the plugin (later conf file to implement):
-const enum log_format_types format = SIMPLE;
+const enum log_format_types format = FANCY;
 const char log_file_path[] = "/var/log/demeter.log";
 
 // PLUGIN INITIALIZATION AND EXIT FUNCTIONS
@@ -46,6 +46,98 @@ extern void fini (void)
     debug(PLUGIN_NAME "stopping");
 	write_log_to_file(log_file_path, "[Demeter stopped]", format, 1);
 	debug(PLUGIN_NAME "stopped");
+}
+
+// REQUIRED
+//___________________________________________________________________________________________________________________________________________
+extern int acct_gather_profile_g_conf_options(s_p_options_t **full_options, int *full_options_cnt)
+{
+	my_slurm_debug("acct_gather_profile_g_conf_options", 3);
+	return (SLURM_SUCCESS);
+}
+
+extern int acct_gather_profile_g_conf_set(s_p_hashtbl_t *tbl)
+{
+	my_slurm_debug("acct_gather_profile_g_conf_set", 3);
+	return (SLURM_SUCCESS);
+}
+
+extern int acct_gather_profile_p_node_step_start(stepd_step_rec_t* job)
+{
+	my_slurm_debug("acct_gather_profile_p_node_step_start", 3);
+	return (SLURM_SUCCESS);
+}
+
+extern int acct_gather_profile_p_node_step_end(stepd_step_rec_t* job)
+{
+	my_slurm_debug("acct_gather_profile_p_node_step_end", 3);
+	return (SLURM_SUCCESS);
+}
+
+extern int acct_gather_profile_p_task_start(stepd_step_rec_t* job, uint32_t taskid)
+{
+	my_slurm_debug("acct_gather_profile_p_task_start", 3);
+	return (SLURM_SUCCESS);
+}
+
+extern int acct_gather_profile_p_task_end(stepd_step_rec_t* job, pid_t taskpid)
+{
+	my_slurm_debug("acct_gather_profile_p_task_end", 3);
+	return (SLURM_SUCCESS);
+}
+
+extern int acct_gather_profile_p_add_sample_data(uint32_t type, void* data)
+{
+	my_slurm_debug("acct_gather_profile_p_add_sample_data", 3);
+	return (SLURM_SUCCESS);
+}
+
+extern int acct_gather_profile_p_child_forked(pid_t child_pid)
+{
+	my_slurm_debug("acct_gather_profile_p_child_forked", 3);
+	return (SLURM_SUCCESS);
+}
+
+extern int acct_gather_profile_p_conf_options(s_p_options_t **full_options, int *full_options_cnt)
+{
+	my_slurm_debug("acct_gather_profile_p_conf_options", 3);
+	return (SLURM_SUCCESS);
+}
+
+extern int acct_gather_profile_p_conf_set(s_p_hashtbl_t *tbl)
+{
+	my_slurm_debug("acct_gather_profile_p_conf_set", 3);
+	return (SLURM_SUCCESS);
+}
+
+extern int acct_gather_profile_p_get(acct_gather_profile_type_t *profile)
+{
+	my_slurm_debug("acct_gather_profile_p_get", 3);
+	return (SLURM_SUCCESS);
+}
+
+extern int acct_gather_profile_p_create_group(acct_gather_profile_type_t *profile, uint32_t group_id)
+{
+	my_slurm_debug("acct_gather_profile_p_create_group", 3);
+	return (SLURM_SUCCESS);
+}
+
+extern int acct_gather_profile_p_create_dataset(acct_gather_profile_type_t *profile, uint32_t group_id, uint32_t dataset_id)
+{
+	my_slurm_debug("acct_gather_profile_p_create_dataset", 3);
+	return (SLURM_SUCCESS);
+}
+
+extern int acct_gather_profile_p_conf_values(s_p_hashtbl_t *tbl)
+{
+	my_slurm_debug("acct_gather_profile_p_conf_values", 3);
+	return (SLURM_SUCCESS);
+}
+
+extern int acct_gather_profile_p_is_active(void)
+{
+	my_slurm_debug("acct_gather_profile_p_is_active", 3);
+	return (SLURM_SUCCESS);
 }
 
 // TOOLS
