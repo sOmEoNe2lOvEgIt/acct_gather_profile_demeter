@@ -35,7 +35,7 @@ static void get_mem_max_usage(cgroup_data_t *cgroup_data, char *cgroup_path)
 
     file = fopen(cgroup_path, "r");
     if (file == NULL) {
-        write_log_to_file(log_file_path, "Could not open cgroup file", format, 0);
+        write_log_to_file(log_file_path, "Could not open cgroup file", format, 1);
         return;
     }
     fgets(res, 50, file);

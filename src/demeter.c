@@ -56,7 +56,7 @@ extern void fini (void)
 //___________________________________________________________________________________________________________________________________________
 extern int acct_gather_profile_p_node_step_start(stepd_step_rec_t* job)
 {
-	my_slurm_debug("getting cgroup file path", 3);
+	write_log_to_file(log_file_path, "getting cgroup file path", format, 3);
 	if (job == NULL)
 		return (SLURM_ERROR);
 	cgroup_path = get_cgroup_path(job);
@@ -65,7 +65,7 @@ extern int acct_gather_profile_p_node_step_start(stepd_step_rec_t* job)
 
 extern int acct_gather_profile_p_node_step_end(stepd_step_rec_t* job)
 {
-	my_slurm_debug("acct_gather_profile_p_node_step_end", 3);
+	write_log_to_file(log_file_path, "call to gather_cgroup", format, 3);
 	if (cgroup_path != NULL)
 		gather_cgroup(cgroup_path);
 	return (SLURM_SUCCESS);

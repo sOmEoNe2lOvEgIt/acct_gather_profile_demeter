@@ -11,6 +11,10 @@
 #include "src/common/log.h"
 #include "demeter.h"
 
+
+//Settings for the plugin (later conf file to implement):
+static uint max_log_lev = 99;
+
 // LOGGING TOOLS
 //___________________________________________________________________________________________________________________________________________
 FILE *init_log_file(const char *log_file_path, bool silent)
@@ -33,11 +37,32 @@ FILE *init_log_file(const char *log_file_path, bool silent)
 
 //LOGGING FUNCTIONS
 //___________________________________________________________________________________________________________________________________________ 
+static char *get_log_level_str(uint level)
+{
+    switch (level) {
+        case 0:
+            return ("");
+        case 1:
+            return ("debug: ");
+        case 2:
+            return ("debug2: ");
+        case 3:
+            return ("debug3: ");
+        case 4:
+            return ("debug4: ");
+        default:
+            return ("");
+    }
+}
+
 int write_log_to_file(const char *log_file_path, char *message,
 enum log_format_types format, uint verbose)
 {
     FILE *log_file;
+    char *log_level = get_log_level_str(verbose);
 
+    if (verbose > max_log_lev)
+        return (0);
     log_file=init_log_file(log_file_path, true);
     if (log_file == NULL) {
         my_slurm_debug("error : can't write to log file, log file is NULL.", 2);
@@ -47,13 +72,13 @@ enum log_format_types format, uint verbose)
     switch (format)
     {
         case FANCY:
-            fprintf(log_file, "[%s]:[acct_gather_profile/demeter]> %s\n", get_time_str(), message);
+            fprintf(log_file, "[%s]:[acct_gather_profile/demeter]> %s%s\n", get_time_str(), log_level, message);
             break;
         case SIMPLE:
-            fprintf(log_file, "%s	| acct_gather_profile/demeter: %s\n", get_time_str(), message);
+            fprintf(log_file, "%s	| acct_gather_profile/demeter: %s%s\n", get_time_str(), log_level, message);
             break;
         case SYSTEM:
-            fprintf(log_file, "acct_gather_profile/demeter: %s\n", message);
+            fprintf(log_file, "acct_gather_profile/demeter: %s%s\n", log_level, message);
             break;
         default:
             my_slurm_debug("error : invalid log format.", 2);
