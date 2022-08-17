@@ -6,6 +6,7 @@
 
 #include "slurm/slurm.h"
 #include "src/slurmd/slurmd/slurmd.h"
+#include "src/slurmd/slurmstepd/slurmstepd_job.h"
 #include <inttypes.h>
 #include <string.h>
 
@@ -52,7 +53,7 @@ void epilog_message(const char *log_file_path, uint32_t nb_jobid, enum log_forma
 // CGROUP FUNCTIONS
 //___________________________________________________________________________________________________________________________________________
 
-cgroup_data_t *gather_cgroup(uint uid, uint jobid);
+cgroup_data_t *gather_cgroup(stepd_step_rec_t* job);
 
 
 #endif /* !DEMETER_H_ */

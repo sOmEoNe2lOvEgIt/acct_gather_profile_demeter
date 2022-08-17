@@ -47,13 +47,13 @@ enum log_format_types format, uint verbose)
     switch (format)
     {
         case FANCY:
-            fprintf(log_file, "[%s]:[acct_gather_profile_demeter]> %s\n", get_time_str(), message);
+            fprintf(log_file, "[%s]:[acct_gather_profile/demeter]> %s\n", get_time_str(), message);
             break;
         case SIMPLE:
-            fprintf(log_file, "%s	| acct_gather_profile_demeter: %s\n", get_time_str(), message);
+            fprintf(log_file, "%s	| acct_gather_profile/demeter: %s\n", get_time_str(), message);
             break;
         case SYSTEM:
-            fprintf(log_file, "acct_gather_profile_demeter: %s\n", message);
+            fprintf(log_file, "acct_gather_profile/demeter: %s\n", message);
             break;
         default:
             my_slurm_debug("error : invalid log format.", 2);

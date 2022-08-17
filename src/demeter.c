@@ -11,6 +11,7 @@
 #include "slurm/slurm.h"
 #include "slurm/slurm_errno.h"
 #include "src/common/slurm_acct_gather_profile.h"
+#include "src/common/cgroup.h"
 #include "demeter.h"
 
 // GLOBAL VARIABLES
@@ -21,8 +22,9 @@ const char plugin_name[] = "Demeter godess of data harvest.";
 const char plugin_type[] = "acct_gather_profile/demeter";
 const uint32_t plugin_version = SLURM_VERSION_NUMBER;
 //Settings for the plugin (later conf file to implement):
-const enum log_format_types format = FANCY;
-const char log_file_path[] = "/var/log/demeter.log";
+static const enum log_format_types format = FANCY;
+static const char log_file_path[] = "/var/log/demeter.log";
+static char *cgroup_path = NULL;
 
 // PLUGIN INITIALIZATION AND EXIT FUNCTIONS
 //___________________________________________________________________________________________________________________________________________
@@ -36,7 +38,7 @@ extern int init (void)
 	if (log_file == NULL)
 		return (SLURM_ERROR);
 	fclose(log_file);
-	write_log_to_file(log_file_path, "[Demeter started]", format, 1);
+	// write_log_to_file(log_file_path, "Demeter started", format, 1);
 	debug(PLUGIN_NAME "started, thank god!");
     return (SLURM_SUCCESS);
 }
@@ -44,7 +46,7 @@ extern int init (void)
 extern void fini (void)
 {
     debug(PLUGIN_NAME "stopping");
-	write_log_to_file(log_file_path, "[Demeter stopped]", format, 1);
+	// write_log_to_file(log_file_path, "Demeter stopped", format, 1);
 	debug(PLUGIN_NAME "stopped");
 }
 
@@ -64,25 +66,32 @@ extern int acct_gather_profile_g_conf_set(s_p_hashtbl_t *tbl)
 
 extern int acct_gather_profile_p_node_step_start(stepd_step_rec_t* job)
 {
+	// gets the right path for the job but cant access it?
+	// Could try to set it as var and read somewhere else... 
 	my_slurm_debug("acct_gather_profile_p_node_step_start", 3);
-	gather_cgroup(job->uid, job->array_job_id);
+	if (job == NULL)
+		return (SLURM_ERROR);
+	gather_cgroup(job);
 	return (SLURM_SUCCESS);
 }
 
 extern int acct_gather_profile_p_node_step_end(stepd_step_rec_t* job)
 {
+	// job var doesn't works here, i've been bambooseled
 	my_slurm_debug("acct_gather_profile_p_node_step_end", 3);
 	return (SLURM_SUCCESS);
 }
 
 extern int acct_gather_profile_p_task_start(stepd_step_rec_t* job, uint32_t taskid)
 {
+	// cringe
 	my_slurm_debug("acct_gather_profile_p_task_start", 3);
 	return (SLURM_SUCCESS);
 }
 
 extern int acct_gather_profile_p_task_end(stepd_step_rec_t* job, pid_t taskpid)
 {
+	// job var broken here?
 	my_slurm_debug("acct_gather_profile_p_task_end", 3);
 	return (SLURM_SUCCESS);
 }
