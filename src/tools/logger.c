@@ -39,19 +39,16 @@ FILE *init_log_file(const char *log_file_path, bool silent)
 //___________________________________________________________________________________________________________________________________________ 
 static char *get_log_level_str(uint level)
 {
+    char log_lev[30];
+
+    sprintf(log_lev, "debug%u:", level);
     switch (level) {
         case 0:
             return ("");
         case 1:
             return ("debug: ");
-        case 2:
-            return ("debug2: ");
-        case 3:
-            return ("debug3: ");
-        case 4:
-            return ("debug4: ");
         default:
-            return ("");
+            return (strdup(log_lev));
     }
 }
 
