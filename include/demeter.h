@@ -62,5 +62,6 @@ cgroup_data_t *gather_cgroup(job_id_info_t *job_info);
 job_id_info_t *get_job_info(stepd_step_rec_t* job);
 
 void get_mem_max_usage(cgroup_data_t *cgroup_data, job_id_info_t *job_info);
+void get_oom_status(cgroup_data_t *cgroup_data, job_id_info_t *job_info);
 
 #endif /* !DEMETER_H_ */

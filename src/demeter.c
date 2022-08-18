@@ -12,6 +12,7 @@
 #include "slurm/slurm_errno.h"
 #include "src/common/slurm_acct_gather_profile.h"
 #include "src/common/cgroup.h"
+#include "src/common/xmalloc.h"
 #include "demeter.h"
 
 // GLOBAL VARIABLES
@@ -24,14 +25,14 @@ const uint32_t plugin_version = SLURM_VERSION_NUMBER;
 //Settings for the plugin (later conf file to implement):
 static const enum log_format_types format = FANCY;
 static const char log_file_path[] = "/var/log/demeter.log";
-static char *cgroup_path = NULL;
 static job_id_info_t *job_info = NULL;
+static cgroup_data_t *cgroup_data = NULL;
 
 // PLUGIN INITIALIZATION AND EXIT FUNCTIONS
 //___________________________________________________________________________________________________________________________________________
 extern int init (void)
 {
-	FILE *log_file;
+	FILE *log_file = NULL;
 
     debug(PLUGIN_NAME "starting");
 	log_file = init_log_file(log_file_path, false);
@@ -47,9 +48,11 @@ extern int init (void)
 extern void fini (void)
 {
     debug(PLUGIN_NAME "stopping");
+	if (job_info != NULL) {
+		free(job_info);
+		free(cgroup_data);
+	}
 	write_log_to_file(log_file_path, "demeter stopped", format, 1);
-	if (cgroup_path != NULL)
-		free(cgroup_path);
 	debug(PLUGIN_NAME "stopped");
 }
 
@@ -68,7 +71,7 @@ extern int acct_gather_profile_p_node_step_end(stepd_step_rec_t* job)
 {
 	write_log_to_file(log_file_path, "call to gather_cgroup", format, 3);
 	if (job_info != NULL)
-		gather_cgroup(job_info);
+		cgroup_data = gather_cgroup(job_info);
 	return (SLURM_SUCCESS);
 }
 

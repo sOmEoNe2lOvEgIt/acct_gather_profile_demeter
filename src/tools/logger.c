@@ -41,7 +41,7 @@ static char *get_log_level_str(uint level)
 {
     char log_lev[30];
 
-    sprintf(log_lev, "debug%u:", level);
+    sprintf(log_lev, "debug%u: ", level);
     switch (level) {
         case 0:
             return ("");
@@ -69,13 +69,13 @@ enum log_format_types format, uint verbose)
     switch (format)
     {
         case FANCY:
-            fprintf(log_file, "[%s]:[acct_gather_profile/demeter]> %s%s\n", get_time_str(), log_level, message);
+            fprintf(log_file, "[%s]:[demeter]> %s%s\n", get_time_str(), log_level, message);
             break;
         case SIMPLE:
-            fprintf(log_file, "%s	| acct_gather_profile/demeter: %s%s\n", get_time_str(), log_level, message);
+            fprintf(log_file, "%s	| demeter: %s%s\n", get_time_str(), log_level, message);
             break;
         case SYSTEM:
-            fprintf(log_file, "acct_gather_profile/demeter: %s%s\n", log_level, message);
+            fprintf(log_file, "demeter: %s%s\n", log_level, message);
             break;
         default:
             my_slurm_debug("error : invalid log format.", 2);
