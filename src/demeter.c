@@ -33,22 +33,22 @@ extern int init (void)
 {
 	FILE *log_file = NULL;
 
-    debug(PLUGIN_NAME "starting");
+    my_slurm_debug("starting",1);
 	demeter_conf = read_conf();
 	log_file = init_log_file(demeter_conf, false);
-	debug2(PLUGIN_NAME "log file initialized");
+	my_slurm_debug("log file initialized", 2);
 	//check if log file is writable:
 	if (log_file == NULL)
 		return (SLURM_ERROR);
 	fclose(log_file);
 	write_log_to_file(demeter_conf, "demeter started", 1);
-	debug(PLUGIN_NAME "started, thank god!");
+	my_slurm_debug("started, thank god!", 1);
     return (SLURM_SUCCESS);
 }
 
 extern void fini (void)
 {
-    debug(PLUGIN_NAME "stopping");
+    my_slurm_debug("stopping", 1);
 	if (job_info != NULL) {
 		free(job_info);
 	}
@@ -62,7 +62,7 @@ extern void fini (void)
 		}
 		free(demeter_conf);
 	}
-	debug(PLUGIN_NAME "stopped");
+	my_slurm_debug("stopped", 1);
 }
 
 // USED
