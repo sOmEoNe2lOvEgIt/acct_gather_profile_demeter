@@ -12,4 +12,4 @@ Verbose <------- syntax: *"Verbose=(uint < 99)"*. Sets the verbose level for the
 
 LogStyle <------ syntax: *"LogStyle="FANCY/SIMPLE/SYSTEM""*. Sets the logging style for demeter logs.
 
-LogFilePath <--- syntax: *"LogFilePath='path/to/an/existing/or/non/existing/file'"*. Sets a custom path for the log file that demeter outputs in.
+LogFilePath <--- syntax: *"LogFilePath='path/to/an/existing/or/non/existing/file'"*. Sets a custom path for the log file that demeter outputs in. [NOTE] The path has to be less then 130 char long.
