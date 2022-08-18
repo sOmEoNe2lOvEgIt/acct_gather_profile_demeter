@@ -1,4 +1,5 @@
-![demeter](https://user-images.githubusercontent.com/87118859/185425935-c3f2b3e4-2430-40c9-97f4-ff7632047ade.png)
+![hoe](https://user-images.githubusercontent.com/87118859/185426173-f3363609-2cfb-43d5-ba2e-dddf615954ac.png)
+
 
 # acct_gather_profile_demeter
 Slurm plugin for harvesting data on your cluster's nodes like info about ram usage, oom state, parsed logs, etc...
