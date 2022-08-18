@@ -3,7 +3,8 @@
 Slurm plugin for harvesting data on your cluster's nodes like info about ram usage, oom state, parsed logs, etc...
 
 ## Conf:
-A conf file can be provided to the plugin if placed at /etc/slurm/demeter.conf. <- This file has to be readable by the slurm user and has to be present on every slurmd as well as the slurm controller.
+A conf file can be provided to the plugin if placed at /etc/slurm/demeter.conf. 
+This file has to be readable by the slurm user and has to be present on every slurmd as well as the slurm controller.
 
 ### This file can contain multiple parameters that you can define:
 
