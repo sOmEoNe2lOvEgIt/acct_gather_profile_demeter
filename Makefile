@@ -15,11 +15,12 @@ PLUGIN_TYPE = acct_gather_profile
 PLUGIN_NAME = demeter
 PLUGIN_FILE = $(PLUGIN_TYPE)_$(PLUGIN_NAME).so
 
-SRC_FILES = src/demeter.c			\
-	src/gatherers/gather_cgroup.c	\
-	src/gatherers/gather_logs.c		\
-	src/tools/logger.c				\
-	src/tools/get_time_str.c		\
+SRC_FILES = src/demeter.c					\
+	src/gatherers/gather_cgroup.c			\
+	src/gatherers/cgroup/get_from_files.c	\
+	src/gatherers/gather_logs.c				\
+	src/tools/logger.c						\
+	src/tools/get_time_str.c				\
 
 CC      = gcc
 CFLAGS  ?= -Wall -fPIC -g -I$(SLURM_INC_DIR) -I$(SLURM_BUILD_DIR) -Iinclude

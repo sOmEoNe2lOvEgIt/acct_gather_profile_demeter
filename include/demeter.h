@@ -29,6 +29,11 @@ typedef struct cgroup_data_s{
     uint oom_kill;
 } cgroup_data_t;
 
+typedef struct job_id_info_s{
+    uint job_id;
+    uint uid;
+} job_id_info_t;
+
 typedef struct job_env_sort_s{
     int id;
 } job_env_sort_t;
@@ -53,7 +58,9 @@ void epilog_message(const char *log_file_path, uint32_t nb_jobid, enum log_forma
 // CGROUP FUNCTIONS
 //___________________________________________________________________________________________________________________________________________
 
-cgroup_data_t *gather_cgroup(char *cgroup_path);
-char *get_cgroup_path(stepd_step_rec_t* job);
+cgroup_data_t *gather_cgroup(job_id_info_t *job_info);
+job_id_info_t *get_job_info(stepd_step_rec_t* job);
+
+void get_mem_max_usage(cgroup_data_t *cgroup_data, job_id_info_t *job_info);
 
 #endif /* !DEMETER_H_ */

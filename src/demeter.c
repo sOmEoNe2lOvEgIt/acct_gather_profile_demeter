@@ -25,6 +25,7 @@ const uint32_t plugin_version = SLURM_VERSION_NUMBER;
 static const enum log_format_types format = FANCY;
 static const char log_file_path[] = "/var/log/demeter.log";
 static char *cgroup_path = NULL;
+static job_id_info_t *job_info = NULL;
 
 // PLUGIN INITIALIZATION AND EXIT FUNCTIONS
 //___________________________________________________________________________________________________________________________________________
@@ -59,15 +60,15 @@ extern int acct_gather_profile_p_node_step_start(stepd_step_rec_t* job)
 	write_log_to_file(log_file_path, "getting cgroup file path", format, 3);
 	if (job == NULL)
 		return (SLURM_ERROR);
-	cgroup_path = get_cgroup_path(job);
+	job_info = get_job_info(job);
 	return (SLURM_SUCCESS);
 }
 
 extern int acct_gather_profile_p_node_step_end(stepd_step_rec_t* job)
 {
 	write_log_to_file(log_file_path, "call to gather_cgroup", format, 3);
-	if (cgroup_path != NULL)
-		gather_cgroup(cgroup_path);
+	if (job_info != NULL)
+		gather_cgroup(job_info);
 	return (SLURM_SUCCESS);
 }
 
