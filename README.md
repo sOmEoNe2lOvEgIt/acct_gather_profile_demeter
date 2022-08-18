@@ -8,5 +8,7 @@ A conf file can be provided to the plugin if placed at /etc/slurm/demeter.conf. 
 ### This file can contain multiple parameters that you can define:
 
 Verbose <- syntax: *"Verbose=(uint < 99)"*, sets the verbose level for the demeter logs.
+
 LogStyle <- syntax: *"LogStyle=FANCY/SIMPLE/SYSTEM"*, sets the logging style for demeter logs.
+
 LogFilePath <- syntax: *"LogFilePath='path/to/an/existing/or/non/existing/file'"*, sets a custom path for the log file that demeter outputs in.
