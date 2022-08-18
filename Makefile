@@ -21,6 +21,7 @@ SRC_FILES = src/demeter.c					\
 	src/gatherers/gather_logs.c				\
 	src/tools/logger.c						\
 	src/tools/get_time_str.c				\
+	src/tools/read_conf.c					\
 
 CC      = gcc
 CFLAGS  ?= -Wall -fPIC -g -I$(SLURM_INC_DIR) -I$(SLURM_BUILD_DIR) -Iinclude

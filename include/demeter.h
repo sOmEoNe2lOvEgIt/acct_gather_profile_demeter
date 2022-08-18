@@ -15,12 +15,18 @@
 
 // ENUMS&STRUCTS
 //___________________________________________________________________________________________________________________________________________
-enum log_format_types
+typedef enum log_style_e
 {
     FANCY=0,
     SIMPLE=1,
     SYSTEM=2,
-};
+} log_style_t;
+
+typedef struct demeter_conf_s{
+    uint verbose_lv;
+    log_style_t log_style;
+    char *log_file_path;
+} demeter_conf_t;
 
 typedef struct cgroup_data_s{
     uint mem_max_usage_bytes;
@@ -45,23 +51,21 @@ void my_slurm_info(char *message);
 void my_slurm_error(char *message);
 void my_slurm_debug(char *message, int level);
 char *get_time_str(void);
+demeter_conf_t *read_conf(void);
 
 // LOGGER FUNCTIONS
 //___________________________________________________________________________________________________________________________________________
 
-FILE *init_log_file(const char *log_file_path, bool silent);
-int write_log_to_file(const char *log_file_path, char *message,
-enum log_format_types format, uint verbose);
-void prolog_message(const char *log_file_path, uint32_t nb_jobid, enum log_format_types format);
-void epilog_message(const char *log_file_path, uint32_t nb_jobid, enum log_format_types format);
+FILE *init_log_file(demeter_conf_t *conf, bool silent);
+int write_log_to_file(demeter_conf_t *conf, char *message, uint verbose);
 
 // CGROUP FUNCTIONS
 //___________________________________________________________________________________________________________________________________________
 
-cgroup_data_t *gather_cgroup(job_id_info_t *job_info);
+cgroup_data_t *gather_cgroup(job_id_info_t *job_info, demeter_conf_t *conf);
 job_id_info_t *get_job_info(stepd_step_rec_t* job);
 
-void get_mem_max_usage(cgroup_data_t *cgroup_data, job_id_info_t *job_info);
-void get_oom_status(cgroup_data_t *cgroup_data, job_id_info_t *job_info);
+void get_oom_status(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_conf_t *conf);
+void get_mem_max_usage(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_conf_t *conf);
 
 #endif /* !DEMETER_H_ */

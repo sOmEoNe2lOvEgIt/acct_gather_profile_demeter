@@ -22,11 +22,10 @@
 const char plugin_name[] = "Demeter godess of data harvest.";
 const char plugin_type[] = "acct_gather_profile/demeter";
 const uint32_t plugin_version = SLURM_VERSION_NUMBER;
-//Settings for the plugin (later conf file to implement):
-static const enum log_format_types format = FANCY;
-static const char log_file_path[] = "/var/log/demeter.log";
+//Data made/needed for the plugin:
 static job_id_info_t *job_info = NULL;
 static cgroup_data_t *cgroup_data = NULL;
+static demeter_conf_t *demeter_conf = NULL;
 
 // PLUGIN INITIALIZATION AND EXIT FUNCTIONS
 //___________________________________________________________________________________________________________________________________________
@@ -35,12 +34,14 @@ extern int init (void)
 	FILE *log_file = NULL;
 
     debug(PLUGIN_NAME "starting");
-	log_file = init_log_file(log_file_path, false);
+	demeter_conf = read_conf();
+	log_file = init_log_file(demeter_conf, false);
+	debug2(PLUGIN_NAME "log file initialized");
 	//check if log file is writable:
 	if (log_file == NULL)
 		return (SLURM_ERROR);
 	fclose(log_file);
-	write_log_to_file(log_file_path, "demeter started", format, 1);
+	write_log_to_file(demeter_conf, "demeter started", 1);
 	debug(PLUGIN_NAME "started, thank god!");
     return (SLURM_SUCCESS);
 }
@@ -50,9 +51,17 @@ extern void fini (void)
     debug(PLUGIN_NAME "stopping");
 	if (job_info != NULL) {
 		free(job_info);
+	}
+	if (cgroup_data != NULL) {
 		free(cgroup_data);
 	}
-	write_log_to_file(log_file_path, "demeter stopped", format, 1);
+	write_log_to_file(demeter_conf, "demeter stopped", 1);
+	if (demeter_conf != NULL) {
+		if (demeter_conf->log_file_path != NULL) {
+			free(demeter_conf->log_file_path);
+		}
+		free(demeter_conf);
+	}
 	debug(PLUGIN_NAME "stopped");
 }
 
@@ -60,7 +69,7 @@ extern void fini (void)
 //___________________________________________________________________________________________________________________________________________
 extern int acct_gather_profile_p_node_step_start(stepd_step_rec_t* job)
 {
-	write_log_to_file(log_file_path, "getting cgroup file path", format, 3);
+	write_log_to_file(demeter_conf, "getting cgroup file path", 3);
 	if (job == NULL)
 		return (SLURM_ERROR);
 	job_info = get_job_info(job);
@@ -69,9 +78,9 @@ extern int acct_gather_profile_p_node_step_start(stepd_step_rec_t* job)
 
 extern int acct_gather_profile_p_node_step_end(stepd_step_rec_t* job)
 {
-	write_log_to_file(log_file_path, "call to gather_cgroup", format, 3);
+	write_log_to_file(demeter_conf, "call to gather_cgroup", 3);
 	if (job_info != NULL)
-		cgroup_data = gather_cgroup(job_info);
+		cgroup_data = gather_cgroup(job_info, demeter_conf);
 	return (SLURM_SUCCESS);
 }
 

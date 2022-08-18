@@ -11,17 +11,13 @@
 #include "src/common/log.h"
 #include "demeter.h"
 
-
-//Settings for the plugin (later conf file to implement):
-static uint max_log_lev = 99;
-
 // LOGGING TOOLS
 //___________________________________________________________________________________________________________________________________________
-FILE *init_log_file(const char *log_file_path, bool silent)
+FILE *init_log_file(demeter_conf_t *conf, bool silent)
 {
     FILE *log_file;
 
-    log_file = fopen(log_file_path, "a");
+    log_file = fopen(conf->log_file_path, "a");
     if (log_file == NULL) {
         if (!silent)
             my_slurm_debug("error: can't open log file. Will try to open log file at \"/tmp/demeter.log\".", 2);
@@ -52,21 +48,20 @@ static char *get_log_level_str(uint level)
     }
 }
 
-int write_log_to_file(const char *log_file_path, char *message,
-enum log_format_types format, uint verbose)
+int write_log_to_file(demeter_conf_t *conf, char *message, uint verbose)
 {
     FILE *log_file;
     char *log_level = get_log_level_str(verbose);
 
-    if (verbose > max_log_lev)
+    if (verbose > conf->verbose_lv)
         return (0);
-    log_file=init_log_file(log_file_path, true);
+    log_file=init_log_file(conf, true);
     if (log_file == NULL) {
         my_slurm_debug("error : can't write to log file, log file is NULL.", 2);
         return (1);
     }
     //different styles of logs
-    switch (format)
+    switch (conf->log_style)
     {
         case FANCY:
             fprintf(log_file, "[%s]:[demeter]> %s%s\n", get_time_str(), log_level, message);
