@@ -21,6 +21,8 @@ static cgroup_data_t *alloc_cgroup_struct(void)
     cgroup_data->oom_kill_disable = 0;
     cgroup_data->under_oom = 0;
     cgroup_data->oom_kill = 0;
+    cgroup_data->cpuset_cpus = NULL;
+    cgroup_data->cpuset_effective_cpus = NULL;
     return (cgroup_data);
 }
 
@@ -47,6 +49,7 @@ cgroup_data_t *gather_cgroup(job_id_info_t *job_info, demeter_conf_t *conf)
         return (NULL);
     get_mem_max_usage(cgroup_data, job_info, conf);
     get_oom_status(cgroup_data, job_info, conf);
+    get_cpuset(cgroup_data, job_info, conf);
     write_log_to_file(conf, "Gathered cgroup data", 3);
     return (cgroup_data);
 }

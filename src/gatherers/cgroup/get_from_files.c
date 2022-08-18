@@ -51,3 +51,33 @@ void get_oom_status(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter
     free(res);
     fclose(file);
 }
+
+void get_cpuset(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_conf_t *conf)
+{
+    char *res = NULL;
+    char cgroup_path[130];
+    size_t read_size = 30;
+    FILE *file = NULL;
+
+    sprintf(cgroup_path, "/sys/fs/cgroup/cpuset/slurm/uid_%u/job_%u/cpuset.cpu_exclusive", job_info->uid, job_info->job_id);
+    file = fopen(cgroup_path, "r");
+    if (file == NULL) {
+        write_log_to_file(conf, "Could not open cgroup file", 1);
+        return;
+    }
+    write_log_to_file(conf, "Getting cpuset", 99);
+    getline(&res, &read_size, file);
+    cgroup_data->cpuset_cpus = strdup(res);
+    fclose(file);
+    sprintf(cgroup_path, "/sys/fs/cgroup/cpuset/slurm/uid_%u/job_%u/cpuset.effective_cpus", job_info->uid, job_info->job_id);
+    file = fopen(cgroup_path, "r");
+    if (file == NULL) {
+        write_log_to_file(conf, "Could not open cgroup file", 1);
+        return;
+    }
+    write_log_to_file(conf, "Getting effective cpus", 99);
+    getline(&res, &read_size, file);
+    cgroup_data->cpuset_effective_cpus = strdup(res);
+    fclose(file);
+    free(res);
+}

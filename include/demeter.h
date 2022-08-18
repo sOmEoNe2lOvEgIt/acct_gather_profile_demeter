@@ -33,6 +33,8 @@ typedef struct cgroup_data_s{
     uint oom_kill_disable;
     uint under_oom;
     uint oom_kill;
+    char *cpuset_cpus;
+    char *cpuset_effective_cpus;
 } cgroup_data_t;
 
 typedef struct job_id_info_s{
@@ -67,5 +69,6 @@ job_id_info_t *get_job_info(stepd_step_rec_t* job);
 
 void get_oom_status(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_conf_t *conf);
 void get_mem_max_usage(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_conf_t *conf);
+void get_cpuset(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_conf_t *conf);
 
 #endif /* !DEMETER_H_ */
