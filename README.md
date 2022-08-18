@@ -8,8 +8,8 @@ This file has to be readable by the slurm user and has to be present on every sl
 
 ### This file can contain multiple parameters that you can define:
 
-Verbose       <- syntax: *"Verbose=(uint < 99)"*, sets the verbose level for the demeter logs.
+Verbose <------- syntax: *"Verbose=(uint < 99)"*. Sets the verbose level for the demeter logs.
 
-LogStyle      <- syntax: *"LogStyle=FANCY/SIMPLE/SYSTEM"*, sets the logging style for demeter logs.
+LogStyle <------ syntax: *"LogStyle=FANCY/SIMPLE/SYSTEM"*. Sets the logging style for demeter logs.
 
-LogFilePath   <- syntax: *"LogFilePath='path/to/an/existing/or/non/existing/file'"*, sets a custom path for the log file that demeter outputs in.
+LogFilePath <--- syntax: *"LogFilePath='path/to/an/existing/or/non/existing/file'"*. Sets a custom path for the log file that demeter outputs in.
