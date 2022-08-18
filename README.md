@@ -1,7 +1,8 @@
 ![hoe](https://user-images.githubusercontent.com/87118859/185426997-149c94e8-e33e-4621-b193-81594645686a.png)
 
-# acct_gather_profile_demeter
-Slurm plugin for harvesting data on your cluster's nodes like info about ram usage, oom state, parsed logs, etc...
+# Demeter
+acct_gather_profile_demeter is a slurm plugin made for harvesting data on your cluster's nodes like info about ram usage, oom state, parsed logs, etc...
+It gathers info by reading sys files just after a job ran as well as reading output logs to parse them into more digestible outputs.
 
 ## Conf:
 A conf file can be provided to the plugin if placed at /etc/slurm/demeter.conf. 
