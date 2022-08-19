@@ -20,12 +20,12 @@ FILE *init_log_file(demeter_conf_t *conf, bool silent)
     log_file = fopen(conf->log_file_path, "a");
     if (log_file == NULL) {
         if (!silent)
-            my_slurm_debug("error: can't open log file. Will try to open log file at \"/tmp/demeter.log\".", 2);
+            my_slurm_debug("warning: can't open log file. Will try to open log file at \"/tmp/demeter.log\".", 2);
         log_file = fopen("/tmp/demeter.log", "a");
     }
     //substitut log file if chosen one is not writable (although this one may not be writable either)
     if (log_file == NULL) {
-        my_slurm_error("FATAL: can't open log file at /tmp/demeter.log either. Exiting.");
+        my_slurm_error("error: can't open log file at /tmp/demeter.log either. Exiting.");
         return (NULL);
     }
     return (log_file);
@@ -40,7 +40,6 @@ static char *get_debug_level_str(uint verbose)
     sprintf(log_lev, "debug%u: ", verbose);
     switch (verbose) {
         case 0:
-            return ("");
         case 1:
             return ("debug: ");
         default:
@@ -91,7 +90,7 @@ int write_log_to_file(demeter_conf_t *conf, char *message, dem_log_level_t level
             fprintf(log_file, "[%s]:[demeter]> %s%s\n", get_time_str(), log_level, message);
             break;
         case SIMPLE:
-            fprintf(log_file, "%s	| demeter: %s%s\n", get_time_str(), log_level, message);
+            fprintf(log_file, "%s | demeter: %s%s\n", get_time_str(), log_level, message);
             break;
         case SYSTEM:
             fprintf(log_file, "demeter: %s%s\n", log_level, message);

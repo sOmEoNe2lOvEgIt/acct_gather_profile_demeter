@@ -9,6 +9,14 @@
 #include "src/common/xmalloc.h"
 #include "demeter.h"
 
+static void cut_str_ret(char *str)
+{
+    int i = 0;
+
+    for (;str[i] != 0 && str[i] != '\n'; i++);
+    str[i] = '\0';
+}
+
 void get_mem_max_usage(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_conf_t *conf)
 {
     char res[50];
@@ -69,6 +77,7 @@ void get_cpuset(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_con
     write_log_to_file(conf, "Getting cpuset", DEBUG, 99);
     getline(&res, &read_size, file);
     cgroup_data->cpuset_cpus = strdup(res);
+    cut_str_ret(cgroup_data->cpuset_cpus);
     fclose(file);
     sprintf(cgroup_path, "/sys/fs/cgroup/cpuset/slurm/uid_%u/job_%u/cpuset.effective_cpus", job_info->uid, job_info->job_id);
     file = fopen(cgroup_path, "r");
@@ -79,6 +88,7 @@ void get_cpuset(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_con
     write_log_to_file(conf, "Getting effective cpus", DEBUG, 99);
     getline(&res, &read_size, file);
     cgroup_data->cpuset_effective_cpus = strdup(res);
+    cut_str_ret(cgroup_data->cpuset_effective_cpus);
     fclose(file);
     free(res);
 }
