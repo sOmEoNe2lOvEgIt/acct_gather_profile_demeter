@@ -18,7 +18,7 @@ void get_mem_max_usage(cgroup_data_t *cgroup_data, job_id_info_t *job_info, deme
     sprintf(cgroup_path, "/sys/fs/cgroup/memory/slurm/uid_%u/job_%u/memory.max_usage_in_bytes", job_info->uid, job_info->job_id);
     file = fopen(cgroup_path, "r");
     if (file == NULL) {
-        write_log_to_file(conf, "Could not open cgroup file", 1);
+        write_log_to_file(conf, "\033[0;31mCould not open cgroup file\033[0m", 1);
         return;
     }
     write_log_to_file(conf, "Getting max memory usage", 99);
@@ -38,7 +38,7 @@ void get_oom_status(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter
     sprintf(cgroup_path, "/sys/fs/cgroup/memory/slurm/uid_%u/job_%u/memory.oom_control", job_info->uid, job_info->job_id);
     file = fopen(cgroup_path, "r");
     if (file == NULL) {
-        write_log_to_file(conf, "Could not open cgroup file", 1);
+        write_log_to_file(conf, "\033[0;31mCould not open cgroup file\033[0m", 1);
         return;
     }
     write_log_to_file(conf, "Getting oom status", 99);
@@ -62,7 +62,7 @@ void get_cpuset(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_con
     sprintf(cgroup_path, "/sys/fs/cgroup/cpuset/slurm/uid_%u/job_%u/cpuset.cpu_exclusive", job_info->uid, job_info->job_id);
     file = fopen(cgroup_path, "r");
     if (file == NULL) {
-        write_log_to_file(conf, "Could not open cgroup file", 1);
+        write_log_to_file(conf, "\033[0;31mCould not open cgroup file\033[0m", 1);
         return;
     }
     write_log_to_file(conf, "Getting cpuset", 99);
@@ -72,7 +72,7 @@ void get_cpuset(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_con
     sprintf(cgroup_path, "/sys/fs/cgroup/cpuset/slurm/uid_%u/job_%u/cpuset.effective_cpus", job_info->uid, job_info->job_id);
     file = fopen(cgroup_path, "r");
     if (file == NULL) {
-        write_log_to_file(conf, "Could not open cgroup file", 1);
+        write_log_to_file(conf, "\033[0;31mCould not open cgroup file\033[0m", 1);
         return;
     }
     write_log_to_file(conf, "Getting effective cpus", 99);
