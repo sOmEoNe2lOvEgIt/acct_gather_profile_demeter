@@ -10,7 +10,7 @@ This file has to be readable by the slurm user and has to be present on every sl
 
 ### This file can contain multiple parameters that you can define:
 
-Verbose <------- syntax: *"Verbose=(uint < 99)"*. Sets the verbose level for the demeter logs.
+Verbose <------- syntax: *"Verbose=(uint)"*. Sets the verbose level for the demeter logs.
 
 LogLevel <------ syntax: *"LogLevel=DEBUG||INFO||WARNING||ERROR||FATAL"*. Sets the logging level for demeter logs.
 
