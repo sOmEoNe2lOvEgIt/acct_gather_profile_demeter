@@ -64,10 +64,10 @@ int write_log_to_file(demeter_conf_t *conf, char *message, uint verbose)
     switch (conf->log_style)
     {
         case FANCY:
-            fprintf(log_file, "\033[1;34m[%s]\033[0m:[demeter]> %s%s\n", get_time_str(), log_level, message);
+            fprintf(log_file, LIGHT_BLUE "[%s]" RESET ":[demeter]> %s%s\n", get_time_str(), log_level, message);
             break;
         case SIMPLE:
-            fprintf(log_file, "\033[1;34m%s\033[0m	| demeter: %s%s\n", get_time_str(), log_level, message);
+            fprintf(log_file, LIGHT_BLUE "%s" RESET "	| demeter: %s%s\n", get_time_str(), log_level, message);
             break;
         case SYSTEM:
             fprintf(log_file, "demeter: %s%s\n", log_level, message);

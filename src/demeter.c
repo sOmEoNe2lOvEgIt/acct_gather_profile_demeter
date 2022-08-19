@@ -41,7 +41,7 @@ extern int init (void)
 	if (log_file == NULL)
 		return (SLURM_ERROR);
 	fclose(log_file);
-	write_log_to_file(demeter_conf, "\033[0;32mdemeter started\033[0m", 1);
+	write_log_to_file(demeter_conf, GREEN "demeter started" RESET, 1);
 	my_slurm_debug("started, thank god!", 1);
     return (SLURM_SUCCESS);
 }
@@ -55,7 +55,7 @@ extern void fini (void)
 	if (cgroup_data != NULL) {
 		free(cgroup_data);
 	}
-	write_log_to_file(demeter_conf, "\033[1;34mdemeter stopped\033[0m", 1);
+	write_log_to_file(demeter_conf, LIGHT_BLUE "demeter stopped" RESET, 1);
 	if (demeter_conf != NULL) {
 		if (demeter_conf->log_file_path != NULL) {
 			free(demeter_conf->log_file_path);
