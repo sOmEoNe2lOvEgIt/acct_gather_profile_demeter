@@ -22,8 +22,18 @@ typedef enum log_style_e
     SYSTEM=2,
 } log_style_t;
 
+typedef enum dem_log_level_e
+{
+    DEBUG=0,
+    INFO=1,
+    WARNING=2,
+    ERROR=3,
+    FATAL=4,
+} dem_log_level_t;
+
 typedef struct demeter_conf_s{
     uint verbose_lv;
+    dem_log_level_t log_level;
     log_style_t log_style;
     char *log_file_path;
 } demeter_conf_t;
@@ -59,7 +69,7 @@ demeter_conf_t *read_conf(void);
 //___________________________________________________________________________________________________________________________________________
 
 FILE *init_log_file(demeter_conf_t *conf, bool silent);
-int write_log_to_file(demeter_conf_t *conf, char *message, uint verbose);
+int write_log_to_file(demeter_conf_t *conf, char *message, dem_log_level_t level, uint verbose);
 
 // CGROUP FUNCTIONS
 //___________________________________________________________________________________________________________________________________________

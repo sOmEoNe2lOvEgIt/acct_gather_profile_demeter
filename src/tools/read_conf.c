@@ -15,6 +15,7 @@ static demeter_conf_t *init_conf(void)
         return (NULL);
     conf->verbose_lv = 0;
     conf->log_style = SIMPLE;
+    conf->log_level = INFO;
     conf->log_file_path = strdup("/var/log/demeter.log");
     return (conf);
 }
@@ -59,16 +60,28 @@ demeter_conf_t *read_conf(void)
         if (strncmp(line, "LogStyle", 8) == 0) {
             if (strncmp(line + 9, "FANCY", 5) == 0)
                 conf->log_style = FANCY;
-            else if (strncmp(line + 9, "SIMPLE", 6) == 0)
+            if (strncmp(line + 9, "SIMPLE", 6) == 0)
                 conf->log_style = SIMPLE;
-            else if (strncmp(line + 9, "SYSTEM", 6) == 0)
+            if (strncmp(line + 9, "SYSTEM", 6) == 0)
                 conf->log_style = SYSTEM;
+        }
+        if (strncmp(line, "LogLevel", 8) == 0) {
+            if (strncmp(line + 9, "DEBUG", 5) == 0)
+                conf->log_level = DEBUG;
+            if (strncmp(line + 9, "INFO", 4) == 0)
+                conf->log_level = INFO;
+            if (strncmp(line + 9, "WARNING", 7) == 0)
+                conf->log_level = WARNING;
+            if (strncmp(line + 9, "ERROR", 5) == 0)
+                conf->log_level = ERROR;
+            if (strncmp(line + 9, "FATAL", 5) == 0)
+                conf->log_level = FATAL;
         }
         if (strncmp(line, "LogFilePath", 11) == 0) {
             conf->log_file_path = get_log_file_path(strdup(line + 12));
         }
     }
     sprintf(teststr, "%u,%u,%s", conf->verbose_lv, conf->log_style, conf->log_file_path);
-    write_log_to_file(conf, teststr, 99);
+    write_log_to_file(conf, teststr, DEBUG, 99);
     return (conf);
 }

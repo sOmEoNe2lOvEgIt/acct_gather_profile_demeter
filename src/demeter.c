@@ -41,7 +41,7 @@ extern int init (void)
 	if (log_file == NULL)
 		return (SLURM_ERROR);
 	fclose(log_file);
-	write_log_to_file(demeter_conf, "demeter started", 1);
+	write_log_to_file(demeter_conf, "demeter started", INFO, 0);
 	my_slurm_debug("started, thank god!", 1);
     return (SLURM_SUCCESS);
 }
@@ -55,7 +55,7 @@ extern void fini (void)
 	if (cgroup_data != NULL) {
 		free(cgroup_data);
 	}
-	write_log_to_file(demeter_conf, "demeter stopped", 1);
+	write_log_to_file(demeter_conf, "demeter stopped", INFO, 0);
 	if (demeter_conf != NULL) {
 		if (demeter_conf->log_file_path != NULL) {
 			free(demeter_conf->log_file_path);
@@ -69,7 +69,7 @@ extern void fini (void)
 //___________________________________________________________________________________________________________________________________________
 extern int acct_gather_profile_p_node_step_start(stepd_step_rec_t* job)
 {
-	write_log_to_file(demeter_conf, "getting cgroup file path", 3);
+	write_log_to_file(demeter_conf, "getting cgroup file path", DEBUG, 3);
 	if (job == NULL)
 		return (SLURM_ERROR);
 	job_info = get_job_info(job);
@@ -78,7 +78,7 @@ extern int acct_gather_profile_p_node_step_start(stepd_step_rec_t* job)
 
 extern int acct_gather_profile_p_node_step_end(stepd_step_rec_t* job)
 {
-	write_log_to_file(demeter_conf, "call to gather_cgroup", 3);
+	write_log_to_file(demeter_conf, "call to gather_cgroup", DEBUG, 3);
 	if (job_info != NULL)
 		cgroup_data = gather_cgroup(job_info, demeter_conf);
 	return (SLURM_SUCCESS);

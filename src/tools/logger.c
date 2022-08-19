@@ -33,12 +33,12 @@ FILE *init_log_file(demeter_conf_t *conf, bool silent)
 
 //LOGGING FUNCTIONS
 //___________________________________________________________________________________________________________________________________________ 
-static char *get_log_level_str(uint level)
+static char *get_debug_level_str(uint verbose)
 {
     char log_lev[30];
 
-    sprintf(log_lev, "debug%u: ", level);
-    switch (level) {
+    sprintf(log_lev, "debug%u: ", verbose);
+    switch (verbose) {
         case 0:
             return ("");
         case 1:
@@ -48,19 +48,43 @@ static char *get_log_level_str(uint level)
     }
 }
 
-int write_log_to_file(demeter_conf_t *conf, char *message, uint verbose)
+static char *get_log_level_str(dem_log_level_t level , uint verbose)
+{
+    switch (level) {
+        case DEBUG:
+            return (get_debug_level_str(verbose));
+            break;
+        case INFO:
+            return (strdup("[INFO]: "));
+        case WARNING:
+            return (strdup("[WARN]: "));
+        case ERROR:
+            if (verbose >= 4)
+            return (strdup("[ERROR]: "));
+        case FATAL:
+            return (strdup("[FATAL]: "));
+        default:
+            return (NULL);
+    }
+}
+
+int write_log_to_file(demeter_conf_t *conf, char *message, dem_log_level_t level, uint verbose)
 {
     FILE *log_file;
-    char *log_level = get_log_level_str(verbose);
+    char *log_level;
 
-    if (verbose > conf->verbose_lv)
+    if (verbose > conf->verbose_lv || level < conf->log_level)
         return (0);
     log_file=init_log_file(conf, true);
     if (log_file == NULL) {
         my_slurm_debug("error : can't write to log file, log file is NULL.", 2);
         return (1);
     }
-    //different styles of logs
+    log_level = get_log_level_str(level, verbose);
+    if (log_level == NULL) {
+        my_slurm_debug("error : can't write to log file, log level is NULL.", 2);
+        return (1);
+    }
     switch (conf->log_style)
     {
         case FANCY:
@@ -75,8 +99,8 @@ int write_log_to_file(demeter_conf_t *conf, char *message, uint verbose)
         default:
             my_slurm_debug("error : invalid log format.", 2);
             fclose(log_file);
-            return (1);
     }
     fclose(log_file);
+    free(log_level);
     return (0);
 }
