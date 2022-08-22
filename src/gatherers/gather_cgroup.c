@@ -12,8 +12,7 @@ static cgroup_data_t *alloc_cgroup_struct(void)
 {
     cgroup_data_t *cgroup_data = malloc(sizeof(cgroup_data_t));
 
-    if (cgroup_data == NULL)
-    {
+    if (cgroup_data == NULL) {
         my_slurm_error("malloc failed");
         return (NULL);
     }

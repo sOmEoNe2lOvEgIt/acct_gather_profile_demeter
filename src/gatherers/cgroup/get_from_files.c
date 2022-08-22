@@ -13,6 +13,8 @@ static void cut_str_ret(char *str)
 {
     int i = 0;
 
+    if (str == NULL)
+        return;
     for (;str[i] != 0 && str[i] != '\n'; i++);
     str[i] = '\0';
 }
@@ -36,7 +38,6 @@ void get_mem_max_usage(cgroup_data_t *cgroup_data, job_id_info_t *job_info, deme
 }
 
 void get_oom_status(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_conf_t *conf)
-
 {
     char *res = NULL;
     char cgroup_path[130];

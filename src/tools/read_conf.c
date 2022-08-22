@@ -48,9 +48,8 @@ demeter_conf_t *read_conf(void)
     if (conf == NULL)
         return (NULL);
     conf_file = fopen("/etc/slurm/demeter.conf", "r");
-    if (conf_file == NULL) {
+    if (conf_file == NULL)
         return (conf);
-    }
     while (getline(&line, &len, conf_file) != -1) {
         if (line[0] == '#')
             continue;
@@ -77,9 +76,8 @@ demeter_conf_t *read_conf(void)
             if (strncmp(line + 9, "FATAL", 5) == 0)
                 conf->log_level = FATAL;
         }
-        if (strncmp(line, "LogFilePath", 11) == 0) {
+        if (strncmp(line, "LogFilePath", 11) == 0)
             conf->log_file_path = get_log_file_path(strdup(line + 12));
-        }
     }
     sprintf(teststr, "%u,%u,%s", conf->verbose_lv, conf->log_style, conf->log_file_path);
     write_log_to_file(conf, teststr, DEBUG, 99);

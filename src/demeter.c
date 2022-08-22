@@ -37,7 +37,7 @@ extern int init (void)
 	demeter_conf = read_conf();
 	log_file = init_log_file(demeter_conf, false);
 	//check if log file is writable:
-	if (log_file == NULL)
+	if (log_file == NULL || demeter_conf == NULL)
 		return (SLURM_ERROR);
 	my_slurm_debug("log file initialized", 2);
 	fclose(log_file);
