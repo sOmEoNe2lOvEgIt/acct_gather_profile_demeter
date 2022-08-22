@@ -23,6 +23,7 @@ SRC_FILES = src/demeter.c							\
 			src/loggers/cgroup/log_cgroup.c			\
 			src/tools/get_time_str.c				\
 			src/tools/read_conf.c					\
+			src/tools/get_job_info.c				\
 
 CC      = gcc
 CFLAGS  ?= -Wall -Wpedantic -fPIC -g -I$(SLURM_INC_DIR) -I$(SLURM_BUILD_DIR) -Iinclude

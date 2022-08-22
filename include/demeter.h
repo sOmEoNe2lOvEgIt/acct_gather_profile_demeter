@@ -15,6 +15,7 @@
 
 // ENUMS&STRUCTS
 //___________________________________________________________________________________________________________________________________________
+
 typedef enum log_style_e
 {
     FANCY=0,
@@ -52,10 +53,6 @@ typedef struct job_id_info_s{
     uint uid;
 } job_id_info_t;
 
-typedef struct job_env_sort_s{
-    int id;
-} job_env_sort_t;
-
 // TOOLS
 //___________________________________________________________________________________________________________________________________________
 
@@ -64,6 +61,7 @@ void my_slurm_error(char *message);
 void my_slurm_debug(char *message, int level);
 char *get_time_str(void);
 demeter_conf_t *read_conf(void);
+job_id_info_t *get_job_info(stepd_step_rec_t* job);
 
 // LOGGER FUNCTIONS
 //___________________________________________________________________________________________________________________________________________
@@ -75,8 +73,10 @@ int write_log_to_file(demeter_conf_t *conf, char *message, dem_log_level_t level
 //___________________________________________________________________________________________________________________________________________
 
 cgroup_data_t *gather_cgroup(job_id_info_t *job_info, demeter_conf_t *conf);
-job_id_info_t *get_job_info(stepd_step_rec_t* job);
 void log_cgroup(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_conf_t *conf);
+
+// CGROUP TOOLS
+//___________________________________________________________________________________________________________________________________________
 
 void get_oom_status(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_conf_t *conf);
 void get_mem_max_usage(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_conf_t *conf);

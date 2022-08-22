@@ -26,20 +26,6 @@ static cgroup_data_t *alloc_cgroup_struct(void)
     return (cgroup_data);
 }
 
-job_id_info_t *get_job_info(stepd_step_rec_t* job)
-{
-    job_id_info_t *job_info = malloc(sizeof(job_id_info_t));
-
-    if (job_info == NULL)
-    {
-        my_slurm_error("malloc failed");
-        return (NULL);
-    }
-    job_info->job_id = job->array_job_id;
-    job_info->uid = job->uid;
-    return (job_info);
-}
-
 cgroup_data_t *gather_cgroup(job_id_info_t *job_info, demeter_conf_t *conf)
 {
     cgroup_data_t *cgroup_data = NULL;
