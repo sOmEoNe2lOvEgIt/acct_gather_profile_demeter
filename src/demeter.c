@@ -49,23 +49,19 @@ extern int init (void)
 extern void fini (void)
 {
     my_slurm_debug("stopping", 1);
-	if (job_info != NULL) {
+	if (job_info != NULL)
 		free(job_info);
-	}
 	if (cgroup_data != NULL) {
-		if (cgroup_data->cpuset_cpus != NULL) {
+		if (cgroup_data->cpuset_cpus != NULL)
 			free(cgroup_data->cpuset_cpus);
-		}
-		if (cgroup_data->cpuset_effective_cpus != NULL) {
+		if (cgroup_data->cpuset_effective_cpus != NULL)
 			free(cgroup_data->cpuset_effective_cpus);
-		}
 		free(cgroup_data);
 	}
 	write_log_to_file(demeter_conf, "demeter stopped", INFO, 0);
 	if (demeter_conf != NULL) {
-		if (demeter_conf->log_file_path != NULL) {
+		if (demeter_conf->log_file_path != NULL)
 			free(demeter_conf->log_file_path);
-		}
 		free(demeter_conf);
 	}
 	my_slurm_debug("stopped", 1);
@@ -181,8 +177,7 @@ void my_slurm_info(char *message)
 
 void my_slurm_debug(char *message, int level)
 {
-	switch (level)
-	{
+	switch (level) {
 	case 1:
 		debug(PLUGIN_NAME "%s", message);
 		break;

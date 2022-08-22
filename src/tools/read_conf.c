@@ -53,9 +53,8 @@ demeter_conf_t *read_conf(void)
     while (getline(&line, &len, conf_file) != -1) {
         if (line[0] == '#')
             continue;
-        if (strncmp(line, "Verbose", 7) == 0) {
+        if (strncmp(line, "Verbose", 7) == 0)
             conf->verbose_lv = atoi(line + 8);
-        }
         if (strncmp(line, "LogStyle", 8) == 0) {
             if (strncmp(line + 9, "FANCY", 5) == 0)
                 conf->log_style = FANCY;
