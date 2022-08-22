@@ -26,11 +26,16 @@ static char *get_log_file_path(char *dirty_path)
     int i;
     int j;
 
-    for(i = 0; dirty_path[i] != '\0' &&
-    dirty_path[i] != '\"'; i++);
+    if (clean_path == NULL)
+        return (NULL);
+    for (i = 0; dirty_path[i] != '\"'; i++) {
+        if (dirty_path[i] == '\0') {
+            free(clean_path);
+            return (NULL);
+        }
+    }
     i++;
-    for(j = 0; dirty_path[i] != '\0' &&
-    dirty_path[i] != '\"'; i++, j++)
+    for (j = 0; dirty_path[i] != '\0' && dirty_path[i] != '\"'; i++, j++)
         clean_path[j] = dirty_path[i];
     clean_path[j] = '\0';
     free(dirty_path);
@@ -44,6 +49,7 @@ demeter_conf_t *read_conf(void)
     char *line = NULL;
     size_t len = 130;
     char teststr[1000];
+    char *log_file_path;
 
     if (conf == NULL)
         return (NULL);
@@ -75,8 +81,11 @@ demeter_conf_t *read_conf(void)
             if (strncmp(line + 9, "FATAL", 5) == 0)
                 conf->log_level = FATAL;
         }
-        if (strncmp(line, "LogFilePath", 11) == 0)
-            conf->log_file_path = get_log_file_path(strdup(line + 12));
+        if (strncmp(line, "LogFilePath", 11) == 0) {
+            log_file_path = get_log_file_path(strdup(line + 12));
+            if (log_file_path != NULL)
+                conf->log_file_path = log_file_path;
+        }
     }
     sprintf(teststr, "%u,%u,%s", conf->verbose_lv, conf->log_style, conf->log_file_path);
     write_log_to_file(conf, teststr, DEBUG, 99);

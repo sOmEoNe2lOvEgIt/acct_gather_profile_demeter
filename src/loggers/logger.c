@@ -53,13 +53,11 @@ static char *get_log_level_str(dem_log_level_t level , uint verbose)
     switch (level) {
         case DEBUG:
             return (get_debug_level_str(verbose));
-            break;
         case INFO:
             return (strdup("[INFO]: "));
         case WARNING:
             return (strdup("[WARN]: "));
         case ERROR:
-            if (verbose >= 4)
             return (strdup("[ERROR]: "));
         case FATAL:
             return (strdup("[FATAL]: "));
