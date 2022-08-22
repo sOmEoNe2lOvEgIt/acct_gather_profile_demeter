@@ -26,7 +26,7 @@ SRC_FILES = src/demeter.c							\
 			src/tools/get_job_info.c				\
 
 CC      = gcc
-CFLAGS  ?= -Wall -Wpedantic -fPIC -g -I$(SLURM_INC_DIR) -I$(SLURM_BUILD_DIR) -Iinclude
+CFLAGS  ?= -Wall -fPIC -g -I$(SLURM_INC_DIR) -I$(SLURM_BUILD_DIR) -Iinclude
 LDFLAGS ?= --shared -L.
 
 all: $(PLUGIN_FILE)
