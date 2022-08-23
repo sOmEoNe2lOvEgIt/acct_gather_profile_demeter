@@ -2,4 +2,3 @@
 *.so
 *.d
 .vscode
-make_send
