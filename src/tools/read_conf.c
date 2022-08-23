@@ -17,6 +17,7 @@ static demeter_conf_t *init_conf(void)
     conf->log_style = SIMPLE;
     conf->log_level = INFO;
     conf->log_file_path = strdup("/var/log/demeter.log");
+    conf->get_log_file_path = strdup("/var/log/slurm");
     return (conf);
 }
 

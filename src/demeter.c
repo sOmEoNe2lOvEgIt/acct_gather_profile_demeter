@@ -25,6 +25,7 @@ const uint32_t plugin_version = SLURM_VERSION_NUMBER;
 //Data made/needed for the plugin:
 static job_id_info_t *job_info = NULL;
 static cgroup_data_t *cgroup_data = NULL;
+static linked_list_t *gathered_logs = NULL;
 static demeter_conf_t *demeter_conf = NULL;
 
 // PLUGIN INITIALIZATION AND EXIT FUNCTIONS
@@ -49,15 +50,9 @@ extern int init (void)
 extern void fini (void)
 {
     my_slurm_debug("stopping", 1);
-	if (job_info != NULL)
-		free(job_info);
-	if (cgroup_data != NULL) {
-		if (cgroup_data->cpuset_cpus != NULL)
-			free(cgroup_data->cpuset_cpus);
-		if (cgroup_data->cpuset_effective_cpus != NULL)
-			free(cgroup_data->cpuset_effective_cpus);
-		free(cgroup_data);
-	}
+	free_job_id_info(job_info);
+	free_cgroup(cgroup_data);
+	free_logs(gathered_logs);
 	write_log_to_file(demeter_conf, "demeter stopped", INFO, 0);
 	if (demeter_conf != NULL) {
 		if (demeter_conf->log_file_path != NULL)
@@ -83,8 +78,14 @@ extern int acct_gather_profile_p_node_step_end(stepd_step_rec_t* job)
 	write_log_to_file(demeter_conf, "call to gather_cgroup", DEBUG, 3);
 	if (job_info != NULL)
 		cgroup_data = gather_cgroup(job_info, demeter_conf);
-	if (cgroup_data != NULL)
+	if (cgroup_data != NULL) {
 		log_cgroup(cgroup_data, job_info, demeter_conf);
+		gathered_logs = gather_logs(demeter_conf, job_info, cgroup_data);
+		if (gathered_logs != NULL) {
+			write_log_to_file(demeter_conf, "logs gathered", DEBUG, 3);
+			write_log_to_file(demeter_conf, ((parsed_log_t *)gathered_logs->data)->unparsed_log, DEBUG, 3);
+		}
+	}
 	return (SLURM_SUCCESS);
 }
 

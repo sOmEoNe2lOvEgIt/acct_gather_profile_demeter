@@ -16,15 +16,13 @@
 // ENUMS&STRUCTS
 //___________________________________________________________________________________________________________________________________________
 
-typedef enum log_style_e
-{
+typedef enum log_style_e {
     FANCY=0,
     SIMPLE=1,
     SYSTEM=2,
 } log_style_t;
 
-typedef enum dem_log_level_e
-{
+typedef enum dem_log_level_e {
     DEBUG=0,
     INFO=1,
     WARNING=2,
@@ -32,14 +30,15 @@ typedef enum dem_log_level_e
     FATAL=4,
 } dem_log_level_t;
 
-typedef struct demeter_conf_s{
+typedef struct demeter_conf_s {
     uint verbose_lv;
     dem_log_level_t log_level;
     log_style_t log_style;
     char *log_file_path;
+    char *get_log_file_path;
 } demeter_conf_t;
 
-typedef struct cgroup_data_s{
+typedef struct cgroup_data_s {
     uint mem_max_usage_bytes;
     uint oom_kill_disable;
     uint under_oom;
@@ -48,10 +47,27 @@ typedef struct cgroup_data_s{
     char *cpuset_effective_cpus;
 } cgroup_data_t;
 
-typedef struct job_id_info_s{
+typedef struct job_id_info_s {
     uint job_id;
     uint uid;
 } job_id_info_t;
+
+// TO IMPLEMENT
+typedef struct parsed_log_s {
+    char *unparsed_log;
+    char *log_proc_name;
+    job_id_info_t *job_id_info;
+    char *log_source_path; //path to the log file, "stdout" if stdout
+    char *log_time_str;
+    //struct host_info_s *host_info; <-- future struct whith info about the host to implement eventually
+    int error_code; //0 if no error, 1 if error, only used for stdout as log source
+    cgroup_data_t *cgroup_data; //matching cgroup data to the log
+} parsed_log_t;
+
+typedef struct linked_list_s {
+    void *data;
+    struct linked_list_s *next;
+} linked_list_t;
 
 // TOOLS
 //___________________________________________________________________________________________________________________________________________
@@ -62,6 +78,16 @@ void my_slurm_debug(char *message, int level);
 char *get_time_str(void);
 demeter_conf_t *read_conf(void);
 job_id_info_t *get_job_info(stepd_step_rec_t* job);
+linked_list_t *add_to_list(linked_list_t *list, void *data);
+
+// I'M FREE!!!
+//___________________________________________________________________________________________________________________________________________
+
+void free_list(linked_list_t *list);
+void free_conf(demeter_conf_t *conf);
+void free_cgroup(cgroup_data_t *data);
+void free_job_id_info(job_id_info_t *job_info);
+void free_parsed_log(parsed_log_t *log);
 
 // LOGGER FUNCTIONS
 //___________________________________________________________________________________________________________________________________________
@@ -81,5 +107,17 @@ void log_cgroup(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_con
 void get_oom_status(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_conf_t *conf);
 void get_mem_max_usage(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_conf_t *conf);
 void get_cpuset(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_conf_t *conf);
+
+// LOG PARSER
+//___________________________________________________________________________________________________________________________________________
+
+linked_list_t *gather_logs(demeter_conf_t *demeter_conf, job_id_info_t *job_info, cgroup_data_t *cgroup_data);
+void free_logs(linked_list_t *log_list);
+
+// LOG PARSER TOOLS
+//___________________________________________________________________________________________________________________________________________
+
+char *read_sys_logs(void);
+
 
 #endif /* !DEMETER_H_ */
