@@ -113,11 +113,13 @@ void get_cpuset(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_con
 
 linked_list_t *gather_logs(demeter_conf_t *demeter_conf, job_id_info_t *job_info, cgroup_data_t *cgroup_data);
 void free_logs(linked_list_t *log_list);
+void log_parsed_logs(linked_list_t *gathered_logs, demeter_conf_t *demeter_conf);
 
 // LOG PARSER TOOLS
 //___________________________________________________________________________________________________________________________________________
 
 char *read_sys_logs(void);
+void get_log_time(parsed_log_t *log_to_parse);
 
 
 #endif /* !DEMETER_H_ */

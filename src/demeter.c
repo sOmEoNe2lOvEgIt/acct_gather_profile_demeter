@@ -76,16 +76,11 @@ extern int acct_gather_profile_p_node_step_start(stepd_step_rec_t* job)
 extern int acct_gather_profile_p_node_step_end(stepd_step_rec_t* job)
 {
 	write_log_to_file(demeter_conf, "call to gather_cgroup", DEBUG, 3);
-	if (job_info != NULL)
-		cgroup_data = gather_cgroup(job_info, demeter_conf);
-	if (cgroup_data != NULL) {
-		log_cgroup(cgroup_data, job_info, demeter_conf);
-		gathered_logs = gather_logs(demeter_conf, job_info, cgroup_data);
-		if (gathered_logs != NULL) {
-			write_log_to_file(demeter_conf, "logs gathered", DEBUG, 3);
-			write_log_to_file(demeter_conf, ((parsed_log_t *)gathered_logs->data)->unparsed_log, DEBUG, 3);
-		}
-	}
+	cgroup_data = gather_cgroup(job_info, demeter_conf);
+	log_cgroup(cgroup_data, job_info, demeter_conf);
+	write_log_to_file(demeter_conf, "call to gather_logs", DEBUG, 3);
+	gathered_logs = gather_logs(demeter_conf, job_info, cgroup_data);
+	log_parsed_logs(gathered_logs, demeter_conf);
 	return (SLURM_SUCCESS);
 }
 

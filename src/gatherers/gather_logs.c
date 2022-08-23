@@ -24,15 +24,16 @@ static parsed_log_t *init_parsed_log(void)
 
 static void process_unparsed_log(parsed_log_t *log_to_parse)
 {
+    get_log_time(log_to_parse);
     //TODO
 }
 
-static void gather_sys_logs(linked_list_t *log_list)
+static void gather_sys_logs(linked_list_t *log_list, job_id_info_t *job_info, cgroup_data_t *cgroup_data)
 {
     char *log_buffer = read_sys_logs();
     parsed_log_t *curr_log = (parsed_log_t *)log_list->data;
     int len = 0;
-    
+
     if (log_buffer == NULL)
         return;
     for (int i = 0; log_buffer[i] != '\0'; i++) {
@@ -40,9 +41,12 @@ static void gather_sys_logs(linked_list_t *log_list)
         if (len == 0)
             continue;
         curr_log->unparsed_log = strndup(log_buffer + i, len);
+        curr_log->log_source_path = strdup("syslog");
         process_unparsed_log(curr_log);
         log_list = add_to_list(log_list, init_parsed_log());
         curr_log = (parsed_log_t *)log_list->data;
+        curr_log->cgroup_data = cgroup_data;
+        curr_log->job_id_info = job_info;
         i += len;
     }
     free(log_buffer);
@@ -52,15 +56,12 @@ void free_logs(linked_list_t *log_list)
 {
     parsed_log_t *curr_log = (parsed_log_t *)log_list->data;
     linked_list_t *next_list = NULL;
-    
-    
-    my_slurm_info("######INTO FREE######");
+
     while (log_list != NULL) {
         next_list = log_list->next;
         curr_log = (parsed_log_t *)log_list->data;
         free_parsed_log(curr_log);
         log_list = next_list;
-        my_slurm_info("######FREED######");
     }
 }
 
@@ -75,6 +76,6 @@ linked_list_t *gather_logs(demeter_conf_t *demeter_conf, job_id_info_t *job_info
     parsed_log->job_id_info = job_info;
     parsed_log->cgroup_data = cgroup_data;
     log_list = add_to_list(log_list, parsed_log);
-    gather_sys_logs(log_list);
+    gather_sys_logs(log_list, job_info, cgroup_data);
     return (log_list);
 }

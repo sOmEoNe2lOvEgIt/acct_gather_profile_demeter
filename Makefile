@@ -15,18 +15,20 @@ PLUGIN_TYPE = acct_gather_profile
 PLUGIN_NAME = demeter
 PLUGIN_FILE = $(PLUGIN_TYPE)_$(PLUGIN_NAME).so
 
-SRC_FILES = src/demeter.c							\
-			src/gatherers/gather_cgroup.c			\
-			src/gatherers/gather_logs.c				\
-			src/gatherers/cgroup/get_from_files.c	\
-			src/loggers/logger.c					\
-			src/gatherers/logs/read_logs.c			\
-			src/loggers/cgroup/log_cgroup.c			\
-			src/tools/get_time_str.c				\
-			src/tools/read_conf.c					\
-			src/tools/get_job_info.c				\
-			src/tools/linked_list.c					\
-			src/tools/free/im_free.c				\
+SRC_FILES = src/demeter.c								\
+			src/gatherers/gather_cgroup.c				\
+			src/gatherers/gather_logs.c					\
+			src/gatherers/cgroup/get_from_files.c		\
+			src/loggers/logger.c						\
+			src/gatherers/logs/read_logs.c				\
+			src/gatherers/logs/get_log_time.c			\
+			src/loggers/cgroup/log_cgroup.c				\
+			src/loggers/parsed_logs/log_parsed_logs.c	\
+			src/tools/get_time_str.c					\
+			src/tools/read_conf.c						\
+			src/tools/get_job_info.c					\
+			src/tools/linked_list.c						\
+			src/tools/free/im_free.c					\
 
 CC      = gcc
 CFLAGS  ?= -Wall -fPIC -g -I$(SLURM_INC_DIR) -I$(SLURM_BUILD_DIR) -Iinclude
