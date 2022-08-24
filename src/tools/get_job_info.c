@@ -5,6 +5,7 @@
 //___________________________________________________________________________________________________________________________________________
 
 #include <stdio.h>
+#include <time.h>
 #include "slurm/slurm.h"
 #include "demeter.h"
 
@@ -18,5 +19,6 @@ job_id_info_t *get_job_info(stepd_step_rec_t* job)
     }
     job_info->job_id = job->array_job_id;
     job_info->uid = job->uid;
+    time(&job_info->start_time);
     return (job_info);
 }

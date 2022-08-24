@@ -50,6 +50,7 @@ typedef struct cgroup_data_s {
 typedef struct job_id_info_s {
     uint job_id;
     uint uid;
+    time_t start_time;
 } job_id_info_t;
 
 // TO IMPLEMENT
@@ -76,6 +77,7 @@ void my_slurm_info(char *message);
 void my_slurm_error(char *message);
 void my_slurm_debug(char *message, int level);
 char *get_time_str(void);
+bool is_log_empty(char *log);
 demeter_conf_t *read_conf(void);
 job_id_info_t *get_job_info(stepd_step_rec_t* job);
 linked_list_t *add_to_list(linked_list_t *list, void *data);
@@ -119,7 +121,7 @@ void log_parsed_logs(linked_list_t *gathered_logs, demeter_conf_t *demeter_conf)
 //___________________________________________________________________________________________________________________________________________
 
 char *read_sys_logs(void);
-void get_log_time(parsed_log_t *log_to_parse);
+int get_log_time(parsed_log_t *log_to_parse, time_t start_time);
 
 
 #endif /* !DEMETER_H_ */

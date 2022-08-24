@@ -25,6 +25,7 @@ SRC_FILES = src/demeter.c									\
 				src/loggers/cgroup/log_cgroup.c				\
 				src/loggers/parsed_logs/log_parsed_logs.c	\
 			src/tools/get_time_str.c						\
+			src/tools/is_log_empty.c						\
 			src/tools/read_conf.c							\
 			src/tools/get_job_info.c						\
 			src/tools/linked_list.c							\

@@ -9,9 +9,10 @@
 
 char *read_sys_logs(void)
 {
-    char log_buffer[4096];
+    static char log_buffer[4096];
 
     if (klogctl(3, log_buffer, 4096) < 0)
         return (NULL);
+    log_buffer[4095] = '\0';
     return (strdup(log_buffer));
 }

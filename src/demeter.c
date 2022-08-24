@@ -50,9 +50,9 @@ extern int init (void)
 extern void fini (void)
 {
     my_slurm_debug("stopping", 1);
+	free_logs(gathered_logs);
 	free_job_id_info(job_info);
 	free_cgroup(cgroup_data);
-	free_logs(gathered_logs);
 	write_log_to_file(demeter_conf, "demeter stopped", INFO, 0);
 	if (demeter_conf != NULL) {
 		if (demeter_conf->log_file_path != NULL)
