@@ -57,8 +57,8 @@ void free_parsed_log(parsed_log_t *log)
 {
     if (log == NULL)
         return;
-    if (log->unparsed_log != NULL)
-        free(log->unparsed_log);
+    if (!is_log_empty(log->unparsed_log))
+        free(log->unparsed_log); //<-------CAUSES WIERD ERRORS
     if (log->log_proc_name != NULL)
         free(log->log_proc_name);
     if (log->log_source_path != NULL)
@@ -66,5 +66,4 @@ void free_parsed_log(parsed_log_t *log)
     if (log->log_time_str != NULL)
         free(log->log_time_str);
     free(log);
-    log = NULL;
 }

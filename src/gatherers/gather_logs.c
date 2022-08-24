@@ -28,10 +28,15 @@ void free_logs(linked_list_t *log_list)
     parsed_log_t *curr_log = NULL;
     linked_list_t *next_list = NULL;
 
+    if (log_list == NULL || log_list->data == NULL)
+        return;
     while (log_list != NULL) {
         next_list = log_list->next;
-        curr_log = (parsed_log_t *)log_list->data;
-        free_parsed_log(curr_log);
+        if ((parsed_log_t *)log_list->data != NULL) {
+            curr_log = (parsed_log_t *)log_list->data;
+            free_parsed_log(curr_log);
+        }
+        free(log_list);
         log_list = next_list;
     }
 }

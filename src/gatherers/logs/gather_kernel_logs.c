@@ -13,10 +13,14 @@ static bool handle_log_time(job_id_info_t *job_info, parsed_log_t *curr_log, dem
 {
     if (get_log_time(curr_log, job_info->start_time) != 0) {
         write_log_to_file(demeter_conf, "Cannot get log time/log is not written at runtime", DEBUG, 99);
-        if (curr_log->unparsed_log != NULL)
+        if (curr_log->unparsed_log != NULL) {
             free(curr_log->unparsed_log);
-        if (curr_log->log_source_path != NULL)
+            curr_log->unparsed_log = NULL;
+        }
+        if (curr_log->log_source_path != NULL) {
             free(curr_log->log_source_path);
+            curr_log->log_source_path = NULL;
+        }
         return false;
     }
     return true;
@@ -38,7 +42,7 @@ cgroup_data_t *cgroup_data, linked_list_t *log_list)
         curr_log->cgroup_data = cgroup_data;
         curr_log->job_id_info = job_info;
         for (len = 0; log_buffer[i + len] != '\0' && log_buffer[i + len] != '\n'; len++);
-        if (len == 0)
+        if (len <= 2)
             continue;
         curr_log->unparsed_log = strndup(log_buffer + i, len);
         i += len - 1;
