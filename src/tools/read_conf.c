@@ -119,6 +119,8 @@ demeter_conf_t *read_conf(void)
             conf->log_level = get_slurm_log_level(line + 9);
         if (strncmp(line, "SlurmLogLevel", 13) == 0)
             conf->slurm_log_level = get_slurm_log_level(line + 14);
+        if (strncmp(line, "SysLogLevel", 11) == 0) {
+            conf->sys_log_level = get_slurm_log_level(line + 12);
         if (strncmp(line, "LogFilePath", 11) == 0) {
             log_file_path = get_log_file_path(strdup(line + 12));
             if (log_file_path != NULL)
@@ -129,7 +131,6 @@ demeter_conf_t *read_conf(void)
             if (slurm_log_path != NULL)
                 conf->slurm_log_path = slurm_log_path;
         }
-
     }
     sprintf(teststr, "%u,%u,%s", conf->verbose_lv, conf->log_style, conf->log_file_path);
     write_log_to_file(conf, teststr, DEBUG, 99);
