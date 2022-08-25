@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include "demeter.h"
+#include "src/common/slurm_xlator.h"
 
 void free_list(linked_list_t *list)
 {

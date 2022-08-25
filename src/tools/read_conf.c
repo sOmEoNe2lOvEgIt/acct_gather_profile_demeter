@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include "demeter.h"
+#include "src/common/slurm_xlator.h"
 
 static char *get_hostname(void)
 {
@@ -50,30 +51,10 @@ static demeter_conf_t *init_conf(void)
     return (conf);
 }
 
-static char *get_log_file_path(char *dirty_path)
-{
-    char *clean_path = malloc(sizeof(char) * (strlen(dirty_path) - 1));
-    int i;
-    int j;
-
-    if (clean_path == NULL)
-        return (NULL);
-    for (i = 0; dirty_path[i] != '\"'; i++) {
-        if (dirty_path[i] == '\0') {
-            free(clean_path);
-            return (NULL);
-        }
-    }
-    i++;
-    for (j = 0; dirty_path[i] != '\0' && dirty_path[i] != '\"'; i++, j++)
-        clean_path[j] = dirty_path[i];
-    clean_path[j] = '\0';
-    free(dirty_path);
-    return (clean_path);
-}
-
 static dem_log_level_t get_slurm_log_level(char *str_level)
 {
+    if (str_level == NULL)
+        return (INFO);
     if (strncmp(str_level, "DEBUG", 5) == 0)
         return (DEBUG);
     if (strncmp(str_level, "INFO", 4) == 0)
@@ -87,52 +68,81 @@ static dem_log_level_t get_slurm_log_level(char *str_level)
     return (INFO);
 }
 
+static bool is_conf_path_accesible(char *path)
+{
+    FILE *file = fopen(path, "r");
+    if (file == NULL)
+        return (false);
+    fclose(file);
+    return (true);
+}
+
 demeter_conf_t *read_conf(void)
 {
+    s_p_options_t options[] = {
+    {"Verbose", S_P_UINT32},
+    {"LogStyle", S_P_STRING},
+    {"LogLevel", S_P_STRING},
+    {"SlurmLogLevel", S_P_STRING},
+    {"SysLogLevel", S_P_STRING},
+    {"LogFilePath", S_P_STRING},
+    {"SlurmLogPath", S_P_STRING},
+    {NULL}};
+    s_p_hashtbl_t *tbl = NULL;
     demeter_conf_t *conf = init_conf();
-    FILE *conf_file;
-    char *line = NULL;
-    size_t len = 130;
+    char conf_path[] = "/etc/slurm/demeter.conf";
+    char *log_style = NULL;
+    char *log_level = NULL;
+    char *slurm_log_level = NULL;
+    char *sys_log_level = NULL;
+    char *log_file_path = NULL;
+    char *slurm_log_path = NULL;
     char teststr[1000];
-    char *log_file_path;
-    char *slurm_log_path;
 
-    if (conf == NULL)
-        return (NULL);
-    conf_file = fopen("/etc/slurm/demeter.conf", "r");
-    if (conf_file == NULL)
+    tbl = s_p_hashtbl_create(options);
+    if (s_p_parse_file(tbl, NULL, conf_path, false) == SLURM_ERROR) {
+        s_p_hashtbl_destroy(tbl);
         return (conf);
-    while (getline(&line, &len, conf_file) != -1) {
-        if (line[0] == '#')
-            continue;
-        if (strncmp(line, "Verbose", 7) == 0)
-            conf->verbose_lv = atoi(line + 8);
-        if (strncmp(line, "LogStyle", 8) == 0) {
-            if (strncmp(line + 9, "FANCY", 5) == 0)
-                conf->log_style = FANCY;
-            if (strncmp(line + 9, "SIMPLE", 6) == 0)
-                conf->log_style = SIMPLE;
-            if (strncmp(line + 9, "SYSTEM", 6) == 0)
-                conf->log_style = SYSTEM;
-        }
-        if (strncmp(line, "LogLevel", 8) == 0)
-            conf->log_level = get_slurm_log_level(line + 9);
-        if (strncmp(line, "SlurmLogLevel", 13) == 0)
-            conf->slurm_log_level = get_slurm_log_level(line + 14);
-        if (strncmp(line, "SysLogLevel", 11) == 0) {
-            conf->sys_log_level = get_slurm_log_level(line + 12);
-        if (strncmp(line, "LogFilePath", 11) == 0) {
-            log_file_path = get_log_file_path(strdup(line + 12));
-            if (log_file_path != NULL)
-                conf->log_file_path = log_file_path;
-        }
-        if (strncmp(line, "SlurmLogPath", 12) == 0) {
-            slurm_log_path = get_log_file_path(strdup(line + 13));
-            if (slurm_log_path != NULL)
-                conf->slurm_log_path = slurm_log_path;
-        }
     }
-    sprintf(teststr, "%u,%u,%s", conf->verbose_lv, conf->log_style, conf->log_file_path);
+    s_p_get_uint32(&conf->verbose_lv, "Verbose", tbl);
+    s_p_get_string(&log_style, "LogStyle", tbl);
+    s_p_get_string(&log_level, "LogLevel", tbl);
+    s_p_get_string(&slurm_log_level, "SlurmLogLevel", tbl);
+    s_p_get_string(&sys_log_level, "SysLogLevel", tbl);
+    s_p_get_string(&log_file_path, "LogFilePath", tbl);
+    s_p_get_string(&slurm_log_path, "SlurmLogPath", tbl);
+    if (log_style != NULL) {
+        if (strncmp(log_style, "FANCY", 5) == 0)
+            conf->log_style = FANCY;
+        if (strncmp(log_style, "SIMPLE", 6) == 0)
+            conf->log_style = SIMPLE;
+        if (strncmp(log_style, "SYSTEM", 6) == 0)
+            conf->log_style = SYSTEM;
+    }
+    if (log_level != NULL) {
+        conf->log_level = get_slurm_log_level(log_level);
+        xfree(log_level);
+    }
+    if (slurm_log_level != NULL) {
+        conf->slurm_log_level = get_slurm_log_level(slurm_log_level);
+        xfree(slurm_log_level);
+    }
+    if (sys_log_level != NULL) {
+        conf->sys_log_level = get_slurm_log_level(sys_log_level);
+        xfree(sys_log_level);
+    }
+    if (log_file_path != NULL) {
+        if (is_conf_path_accesible(log_file_path))
+            conf->log_file_path = strdup(log_file_path);
+        xfree(log_file_path);
+    }
+    if (slurm_log_path != NULL) {
+        if (is_conf_path_accesible(slurm_log_path))
+            conf->slurm_log_path = strdup(slurm_log_path);
+        xfree(slurm_log_path);
+    }
+    s_p_hashtbl_destroy(tbl);
+    sprintf(teststr, "%u,%u,%s,%s", conf->verbose_lv, conf->log_style, conf->log_file_path, conf->slurm_log_path);
     write_log_to_file(conf, teststr, DEBUG, 99);
     return (conf);
 }

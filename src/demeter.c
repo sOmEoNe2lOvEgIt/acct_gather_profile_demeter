@@ -80,7 +80,7 @@ extern int acct_gather_profile_p_node_step_end(stepd_step_rec_t* job)
 	log_cgroup(cgroup_data, job_info, demeter_conf);
 	write_log_to_file(demeter_conf, "call to gather_logs", DEBUG, 3);
 	gathered_logs = gather_logs(demeter_conf, job_info, cgroup_data);
-	log_parsed_logs(gathered_logs, demeter_conf);
+	// log_parsed_logs(gathered_logs, demeter_conf);
 	return (SLURM_SUCCESS);
 }
 
