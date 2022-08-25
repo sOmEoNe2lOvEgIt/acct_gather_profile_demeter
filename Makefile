@@ -20,6 +20,7 @@ SRC_FILES = src/demeter.c									\
 			src/gatherers/gather_logs.c						\
 				src/gatherers/cgroup/get_from_files.c		\
 				src/gatherers/logs/gather_kernel_logs.c		\
+				src/gatherers/logs/gather_slurm_logs.c		\
 				src/gatherers/logs/read_logs.c				\
 				src/gatherers/logs/get_log_time.c			\
 			src/loggers/logger.c							\

@@ -25,8 +25,8 @@ void free_conf(demeter_conf_t *conf)
 {
     if (conf == NULL)
         return;
-    if (conf->get_log_file_path != NULL)
-        free(conf->get_log_file_path);
+    if (conf->slurm_log_path != NULL)
+        free(conf->slurm_log_path);
     if (conf->log_file_path != NULL)
         free(conf->log_file_path);
     free(conf);
@@ -58,7 +58,7 @@ void free_parsed_log(parsed_log_t *log)
     if (log == NULL)
         return;
     if (!is_log_empty(log->unparsed_log))
-        free(log->unparsed_log); //<-------CAUSES WIERD ERRORS
+        free(log->unparsed_log);
     if (log->log_proc_name != NULL)
         free(log->log_proc_name);
     if (log->log_source_path != NULL)

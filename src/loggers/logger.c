@@ -85,10 +85,10 @@ int write_log_to_file(demeter_conf_t *conf, char *message, dem_log_level_t level
     }
     switch (conf->log_style) {
         case FANCY:
-            fprintf(log_file, "[%s]:[demeter]> %s%s\n", get_time_str(), log_level, message);
+            fprintf(log_file, "%s:[demeter]> %s%s\n", get_time_str(), log_level, message);
             break;
         case SIMPLE:
-            fprintf(log_file, "%s | demeter: %s%s\n", get_time_str(), log_level, message);
+            fprintf(log_file, "%s demeter: %s%s\n", get_time_str(), log_level, message);
             break;
         case SYSTEM:
             fprintf(log_file, "demeter: %s%s\n", log_level, message);
