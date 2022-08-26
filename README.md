@@ -14,6 +14,12 @@ Verbose <------- syntax: *"Verbose=(uint)"*. Sets the verbose level for the deme
 
 LogLevel <------ syntax: *"LogLevel=DEBUG||INFO||WARNING||ERROR||FATAL"*. Sets the logging level for demeter logs.
 
+SlurmLogLevel <- syntax: *"SlurmLogLevel=DEBUG||INFO||WARNING||ERROR||FATAL"*. Sets the minimum log level at which the plugin will parse slurm logs.
+
+SysLogLevel <- syntax: *"SlurmLogLevel=DEBUG||INFO||WARNING||ERROR||FATAL"*. Sets the minimum log level at which the plugin will parse sys logs.
+
 LogStyle <------ syntax: *"LogStyle=FANCY||SIMPLE||SYSTEM"*. Sets the logging style for demeter logs.
 
-LogFilePath <--- syntax: *"LogFilePath="path/to/an/existing/or/non/existing/file""*. Sets a custom path for the log file that demeter outputs in. [NOTE] The path has to be less then 130 char long and has to be placed between "quotes".
+LogFilePath <--- syntax: *"LogFilePath=path/to/an/existing/or/non/existing/file"*. Sets a custom path for the log file that demeter outputs in.
+
+SlurmLogPath <-- syntax: *"LogFilePath=path/to/an/existing/or/non/existing/file"*. Sets a custom path for the slur log file that demeter will parse.
