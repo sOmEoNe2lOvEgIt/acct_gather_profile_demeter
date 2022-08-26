@@ -5,6 +5,7 @@
 //___________________________________________________________________________________________________________________________________________
 
 #include <string.h>
+#include <sys/eventfd.h>
 #include "src/slurmd/slurmd/slurmd.h"
 #include "src/common/xmalloc.h"
 #include "demeter.h"
@@ -57,9 +58,9 @@ void get_oom_status(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter
     cgroup_data->under_oom = atoi(&res[10]);
     getline(&res, &read_size, file);
     cgroup_data->oom_kill = atoi(&res[9]);
-    write_log_to_file(conf, "Got oom status", DEBUG, 99);
     free(res);
     fclose(file);
+    write_log_to_file(conf, "Got oom status", DEBUG, 99);
 }
 
 void get_cpuset(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_conf_t *conf)
