@@ -26,6 +26,7 @@ const uint32_t plugin_version = SLURM_VERSION_NUMBER;
 static job_id_info_t *job_info = NULL;
 static cgroup_data_t *cgroup_data = NULL;
 static linked_list_t *gathered_logs = NULL;
+static linked_list_t *gathered_sel = NULL;
 static demeter_conf_t *demeter_conf = NULL;
 
 // PLUGIN INITIALIZATION AND EXIT FUNCTIONS
@@ -51,6 +52,7 @@ extern void fini (void)
 {
     my_slurm_debug("stopping", 1);
 	free_log_list(gathered_logs);
+	free_sel_list(gathered_sel);
 	free_job_id_info(job_info);
 	free_cgroup(cgroup_data);
 	write_log_to_file(demeter_conf, "demeter stopped", INFO, 0);
@@ -79,8 +81,11 @@ extern int acct_gather_profile_p_node_step_end(stepd_step_rec_t* job)
 	cgroup_data = gather_cgroup(job_info, demeter_conf);
 	write_log_to_file(demeter_conf, "call to gather_logs", DEBUG, 3);
 	gathered_logs = gather_logs(demeter_conf, job_info, cgroup_data);
+	write_log_to_file(demeter_conf, "call to gather_sel", DEBUG, 3);
+	gathered_sel = gather_sel(demeter_conf, job_info, cgroup_data);
 	log_cgroup(cgroup_data, job_info, demeter_conf);
 	log_parsed_logs(gathered_logs, demeter_conf);
+	log_parsed_sel(gathered_sel, demeter_conf);
 	return (SLURM_SUCCESS);
 }
 

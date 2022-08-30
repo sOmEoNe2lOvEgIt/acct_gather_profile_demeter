@@ -26,5 +26,6 @@ linked_list_t *gather_sel(demeter_conf_t *demeter_conf, job_id_info_t *job_info,
 {
     linked_list_t *sel_list = NULL;
 
+    sel_list = gather_sel_logs(demeter_conf, job_info, sel_list);
     return (sel_list);
 }

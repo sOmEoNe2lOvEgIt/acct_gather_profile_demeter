@@ -117,8 +117,8 @@ void free_sel_list(linked_list_t *sel_list)
         return;
     while (sel_list != NULL) {
         next_list = sel_list->next;
-        if ((parsed_log_t *)sel_list->data != NULL) {
-            curr_sel = (parsed_log_t *)sel_list->data;
+        if ((parsed_sel_t *)sel_list->data != NULL) {
+            curr_sel = (parsed_sel_t *)sel_list->data;
             free_parsed_sel(curr_sel);
         }
         free(sel_list);

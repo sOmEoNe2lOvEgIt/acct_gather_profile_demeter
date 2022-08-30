@@ -25,9 +25,11 @@ SRC_FILES = src/demeter.c									\
 				src/gatherers/logs/read_logs.c				\
 				src/gatherers/logs/get_log_time.c			\
 				src/gatherers/sel/gather_sel_logs.c			\
+				src/gatherers/sel/handle_sel.c				\
 			src/loggers/logger.c							\
 				src/loggers/cgroup/log_cgroup.c				\
 				src/loggers/parsed_logs/log_parsed_logs.c	\
+				src/loggers/parsed_sel/log_sel.c			\
 			src/tools/is_log_empty.c						\
 			src/tools/read_conf.c							\
 			src/tools/linked_list.c							\

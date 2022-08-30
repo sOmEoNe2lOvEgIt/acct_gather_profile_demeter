@@ -113,7 +113,7 @@ FILE *init_log_file(demeter_conf_t *conf, bool silent); // Initializes demeter l
 int write_log_to_file(demeter_conf_t *conf, char *message, dem_log_level_t level, uint verbose); // Writes log to demeter log file.
 void log_parsed_logs(linked_list_t *gathered_logs, demeter_conf_t *demeter_conf); // Specific to gathered logs.
 void log_cgroup(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_conf_t *conf); // Specific to cgroup data.
-
+void log_parsed_sel(linked_list_t *gathered_sel, demeter_conf_t *demeter_conf); // Specific to gathered sel.
 // CGROUP FUNCTION
 //___________________________________________________________________________________________________________________________________________
 
@@ -152,5 +152,10 @@ linked_list_t *gather_sel(demeter_conf_t *demeter_conf, job_id_info_t *job_info,
 //___________________________________________________________________________________________________________________________________________
 
 parsed_sel_t *init_parsed_sel(void); // Returns a new propperly allocated empty parsed sel struct.
+linked_list_t *gather_sel_logs(demeter_conf_t *demeter_conf, job_id_info_t *job_info, linked_list_t *sel_list);
+int handle_sel_time(parsed_sel_t *curr_sel, demeter_conf_t *demeter_conf, time_t start_time);
+int handle_sel_type(parsed_sel_t *curr_sel);
+int handle_sel_msg(parsed_sel_t *curr_sel);
+int handle_sel_assert(parsed_sel_t *curr_sel);
 
 #endif /* !DEMETER_H_ */
