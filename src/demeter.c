@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include "slurm/slurm.h"
 #include "slurm/slurm_errno.h"
-#include "src/common/slurm_acct_gather_profile.h"
+#include "src/common/prep.h"
 #include "src/common/cgroup.h"
 #include "src/common/xmalloc.h"
 #include "demeter.h"
@@ -18,10 +18,15 @@
 // GLOBAL VARIABLES
 //___________________________________________________________________________________________________________________________________________
 //setting required variables for slurm:
-#define PLUGIN_NAME "acct_gather_profile/demeter: "
+#define PLUGIN_NAME "prep/demeter: "
 const char plugin_name[] = "Demeter godess of data harvest.";
-const char plugin_type[] = "acct_gather_profile/demeter";
+const char plugin_type[] = "prep/demeter";
 const uint32_t plugin_version = SLURM_VERSION_NUMBER;
+//Disable the plugin for controller:
+static bool have_prolog_slurmctld = false;
+static bool have_epilog_slurmctld = false;
+void (*prolog_slurmctld_callback)(int rc, uint32_t job_id) = NULL;
+void (*epilog_slurmctld_callback)(int rc, uint32_t job_id) = NULL;
 //Data used by the plugin.
 static job_id_info_t *job_info = NULL;
 static cgroup_data_t *cgroup_data = NULL;
@@ -66,7 +71,7 @@ extern void fini (void)
 
 // USED
 //___________________________________________________________________________________________________________________________________________
-extern int acct_gather_profile_p_node_step_start(stepd_step_rec_t* job)
+extern int prep_p_prolog(job_env_t *job, slurm_cred_t *cred)
 {
 	write_log_to_file(demeter_conf, "getting cgroup file path", DEBUG, 3);
 	if (job == NULL)
@@ -75,7 +80,7 @@ extern int acct_gather_profile_p_node_step_start(stepd_step_rec_t* job)
 	return (SLURM_SUCCESS);
 }
 
-extern int acct_gather_profile_p_node_step_end(stepd_step_rec_t* job)
+extern int prep_p_epilog(job_env_t *job_env, slurm_cred_t *cred)
 {
 	write_log_to_file(demeter_conf, "call to gather_cgroup", DEBUG, 3);
 	cgroup_data = gather_cgroup(job_info, demeter_conf);
@@ -91,83 +96,51 @@ extern int acct_gather_profile_p_node_step_end(stepd_step_rec_t* job)
 
 // REQUIRED
 //___________________________________________________________________________________________________________________________________________
-extern int acct_gather_profile_g_conf_options(s_p_options_t **full_options, int *full_options_cnt)
+
+extern void prep_p_register_callbacks(prep_callbacks_t *callbacks)
 {
-	my_slurm_debug("acct_gather_profile_g_conf_options", 3);
-	return (SLURM_SUCCESS);
+    if (!(prolog_slurmctld_callback = callbacks->prolog_slurmctld))
+		have_prolog_slurmctld = false;
+	if (!(epilog_slurmctld_callback = callbacks->epilog_slurmctld))
+		have_epilog_slurmctld = false;
 }
 
-extern int acct_gather_profile_g_conf_set(s_p_hashtbl_t *tbl)
+extern void prep_p_required(prep_call_type_t type, bool *required)
 {
-	my_slurm_debug("acct_gather_profile_g_conf_set", 3);
-	return (SLURM_SUCCESS);
+	*required = false;
+
+	switch (type) {
+	case PREP_PROLOG_SLURMCTLD:
+		if (running_in_slurmctld())
+			*required = false;
+		break;
+	case PREP_EPILOG_SLURMCTLD:
+		if (running_in_slurmctld())
+			*required = false;
+		break;
+	case PREP_PROLOG:
+	case PREP_EPILOG:
+		if (running_in_slurmd())
+			*required = true;
+		break;
+	default:
+		return;
+	}
+	return;
 }
 
-extern int acct_gather_profile_p_task_start(stepd_step_rec_t* job, uint32_t taskid)
+extern int prep_p_prolog_slurmctld(int rc, uint32_t job_id)
 {
-	my_slurm_debug("acct_gather_profile_p_task_start", 3);
-	return (SLURM_SUCCESS);
+    my_slurm_debug("prolog Slurmctld (this shoudn't happend)", 2);
+    return (SLURM_SUCCESS);
 }
 
-extern int acct_gather_profile_p_task_end(stepd_step_rec_t* job, pid_t taskpid)
+extern int prep_p_epilog_slurmctld(int rc, uint32_t job_id)
 {
-	my_slurm_debug("acct_gather_profile_p_task_end", 3);
-	return (SLURM_SUCCESS);
+    my_slurm_debug("epilog Slurmctld (this shoudn't happend)", 2);
+    return (SLURM_SUCCESS);
 }
 
-extern int acct_gather_profile_p_add_sample_data(uint32_t type, void* data)
-{
-	my_slurm_debug("acct_gather_profile_p_add_sample_data", 3);
-	return (SLURM_SUCCESS);
-}
-
-extern int acct_gather_profile_p_child_forked(pid_t child_pid)
-{
-	my_slurm_debug("acct_gather_profile_p_child_forked", 3);
-	return (SLURM_SUCCESS);
-}
-
-extern int acct_gather_profile_p_conf_options(s_p_options_t **full_options, int *full_options_cnt)
-{
-	my_slurm_debug("acct_gather_profile_p_conf_options", 3);
-	return (SLURM_SUCCESS);
-}
-
-extern int acct_gather_profile_p_conf_set(s_p_hashtbl_t *tbl)
-{
-	my_slurm_debug("acct_gather_profile_p_conf_set", 3);
-	return (SLURM_SUCCESS);
-}
-
-extern int acct_gather_profile_p_get(acct_gather_profile_type_t *profile)
-{
-	my_slurm_debug("acct_gather_profile_p_get", 3);
-	return (SLURM_SUCCESS);
-}
-
-extern int acct_gather_profile_p_create_group(acct_gather_profile_type_t *profile, uint32_t group_id)
-{
-	my_slurm_debug("acct_gather_profile_p_create_group", 3);
-	return (SLURM_SUCCESS);
-}
-
-extern int acct_gather_profile_p_create_dataset(acct_gather_profile_type_t *profile, uint32_t group_id, uint32_t dataset_id)
-{
-	my_slurm_debug("acct_gather_profile_p_create_dataset", 3);
-	return (SLURM_SUCCESS);
-}
-
-extern int acct_gather_profile_p_conf_values(s_p_hashtbl_t *tbl)
-{
-	my_slurm_debug("acct_gather_profile_p_conf_values", 3);
-	return (SLURM_SUCCESS);
-}
-
-extern int acct_gather_profile_p_is_active(void)
-{
-	my_slurm_debug("acct_gather_profile_p_is_active", 3);
-	return (SLURM_SUCCESS);
-}
 
 // TOOLS
 //___________________________________________________________________________________________________________________________________________
