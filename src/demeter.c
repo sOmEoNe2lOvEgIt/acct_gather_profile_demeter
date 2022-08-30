@@ -22,7 +22,7 @@
 const char plugin_name[] = "Demeter godess of data harvest.";
 const char plugin_type[] = "acct_gather_profile/demeter";
 const uint32_t plugin_version = SLURM_VERSION_NUMBER;
-//Data made/needed for the plugin:
+//Data used by the plugin.
 static job_id_info_t *job_info = NULL;
 static cgroup_data_t *cgroup_data = NULL;
 static linked_list_t *gathered_logs = NULL;
@@ -50,7 +50,7 @@ extern int init (void)
 extern void fini (void)
 {
     my_slurm_debug("stopping", 1);
-	free_logs(gathered_logs);
+	free_log_list(gathered_logs);
 	free_job_id_info(job_info);
 	free_cgroup(cgroup_data);
 	write_log_to_file(demeter_conf, "demeter stopped", INFO, 0);

@@ -61,10 +61,18 @@ typedef struct parsed_log_s { // Logs gathered for each job step || job.
     char *unparsed_log; // Raw log line.
     char *log_proc_name; // Name of process outputing log.
     char *log_source_path; //path to the log file, "stdout" if stdout
-    char *log_time_str; // Time of log in readable format.
+    char *log_time_str; // Time & date of log in readable format.
     //struct host_info_s *host_info; <-- future struct whith info about the host to implement eventually
     int error_code; //0 if no error, 1 if error, only used for stdout as log source
 } parsed_log_t;
+
+typedef struct parsed_sel_s {
+    char *unparsed_sel; // Raw sel line.
+    char *sel_time_str; // Time & date of sel in readable format.
+    char *sel_msg_type; // Type of sel message.
+    char *sel_msg; // Actual sel message.
+    bool asserted; // True if sel message is "asserted".
+} parsed_sel_t;
 
 typedef struct linked_list_s { // Generic linked list.
     void *data; // Needs to be casted to the appropriate type.
@@ -94,6 +102,9 @@ void free_conf(demeter_conf_t *conf);
 void free_cgroup(cgroup_data_t *data);
 void free_job_id_info(job_id_info_t *job_info);
 void free_parsed_log(parsed_log_t *log);
+void free_log_list(linked_list_t *log_list);
+void free_sel_list(linked_list_t *sel_list);
+void free_parsed_sel(parsed_sel_t *parsed_sel);
 
 // LOGGER FUNCTIONS
 //___________________________________________________________________________________________________________________________________________
@@ -125,12 +136,21 @@ linked_list_t *gather_logs(demeter_conf_t *demeter_conf, job_id_info_t *job_info
 
 char *read_sys_logs(void); //Returns logs from kernel logs.
 parsed_log_t *init_parsed_log(void) ; // Returns a new propperly allocated empty parsed log struct.
-void free_logs(linked_list_t *log_list); // Frees all logs in a list. (does not free the list itself)
 int get_sys_log_time(parsed_log_t *log_to_parse, time_t start_time); // Adds readable time to log. Returns 0 if no error,
 // other if error (including the log time not being at job runtime).
 int get_slurm_log_time(parsed_log_t *log_to_parse, time_t start_time); // Adds readable time to log. Returns 0 if no error,
 // other if error (including the log time not being at job runtime).
 linked_list_t *gather_kernel_logs (demeter_conf_t *demeter_conf, job_id_info_t *job_info, cgroup_data_t *cgroup_data, linked_list_t *log_list);
 linked_list_t *gather_slurm_logs (demeter_conf_t *demeter_conf, job_id_info_t *job_info,cgroup_data_t *cgroup_data, linked_list_t *log_list);
+
+// SEL_PARSER FUNCTION
+//___________________________________________________________________________________________________________________________________________
+
+linked_list_t *gather_sel(demeter_conf_t *demeter_conf, job_id_info_t *job_info, cgroup_data_t *cgroup_data); // Gathers sel.
+
+// SEL_PARSER TOOLS
+//___________________________________________________________________________________________________________________________________________
+
+parsed_sel_t *init_parsed_sel(void); // Returns a new propperly allocated empty parsed sel struct.
 
 #endif /* !DEMETER_H_ */

@@ -18,11 +18,13 @@ PLUGIN_FILE = $(PLUGIN_TYPE)_$(PLUGIN_NAME).so
 SRC_FILES = src/demeter.c									\
 			src/gatherers/gather_cgroup.c					\
 			src/gatherers/gather_logs.c						\
+			src/gatherers/gather_sel.c						\
 				src/gatherers/cgroup/get_from_files.c		\
 				src/gatherers/logs/gather_kernel_logs.c		\
 				src/gatherers/logs/gather_slurm_logs.c		\
 				src/gatherers/logs/read_logs.c				\
 				src/gatherers/logs/get_log_time.c			\
+				src/gatherers/sel/gather_sel_logs.c			\
 			src/loggers/logger.c							\
 				src/loggers/cgroup/log_cgroup.c				\
 				src/loggers/parsed_logs/log_parsed_logs.c	\

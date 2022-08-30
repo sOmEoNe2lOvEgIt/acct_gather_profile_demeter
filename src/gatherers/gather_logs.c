@@ -21,24 +21,6 @@ parsed_log_t *init_parsed_log(void)
     return (parsed_log);
 }
 
-void free_logs(linked_list_t *log_list)
-{
-    parsed_log_t *curr_log = NULL;
-    linked_list_t *next_list = NULL;
-
-    if (log_list == NULL || log_list->data == NULL)
-        return;
-    while (log_list != NULL) {
-        next_list = log_list->next;
-        if ((parsed_log_t *)log_list->data != NULL) {
-            curr_log = (parsed_log_t *)log_list->data;
-            free_parsed_log(curr_log);
-        }
-        free(log_list);
-        log_list = next_list;
-    }
-}
-
 linked_list_t *gather_logs(demeter_conf_t *demeter_conf, job_id_info_t *job_info, cgroup_data_t *cgroup_data)
 {
     linked_list_t *log_list = NULL;

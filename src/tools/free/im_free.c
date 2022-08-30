@@ -54,6 +54,9 @@ void free_job_id_info(job_id_info_t *job_info)
     job_info = NULL;
 }
 
+// LOG
+//___________________________________________________________________________________________________________________________________________
+
 void free_parsed_log(parsed_log_t *log)
 {
     if (log == NULL)
@@ -67,4 +70,58 @@ void free_parsed_log(parsed_log_t *log)
     if (log->log_time_str != NULL)
         free(log->log_time_str);
     free(log);
+}
+
+void free_log_list(linked_list_t *log_list)
+{
+    parsed_log_t *curr_log = NULL;
+    linked_list_t *next_list = NULL;
+
+    if (log_list == NULL || log_list->data == NULL)
+        return;
+    while (log_list != NULL) {
+        next_list = log_list->next;
+        if ((parsed_log_t *)log_list->data != NULL) {
+            curr_log = (parsed_log_t *)log_list->data;
+            free_parsed_log(curr_log);
+        }
+        free(log_list);
+        log_list = next_list;
+    }
+}
+
+// SEL
+//___________________________________________________________________________________________________________________________________________
+
+void free_parsed_sel(parsed_sel_t *parsed_sel)
+{
+    if (parsed_sel == NULL)
+        return;
+    if (parsed_sel->unparsed_sel != NULL)
+        free(parsed_sel->unparsed_sel);
+    if (parsed_sel->sel_time_str != NULL)
+        free(parsed_sel->sel_time_str);
+    if (parsed_sel->sel_msg != NULL)
+        free(parsed_sel->sel_msg);
+    if (parsed_sel->sel_msg_type != NULL)
+        free(parsed_sel->sel_msg_type);
+    free(parsed_sel);
+}
+
+void free_sel_list(linked_list_t *sel_list)
+{
+    parsed_sel_t *curr_sel = NULL;
+    linked_list_t *next_list = NULL;
+
+    if (sel_list == NULL || sel_list->data == NULL)
+        return;
+    while (sel_list != NULL) {
+        next_list = sel_list->next;
+        if ((parsed_log_t *)sel_list->data != NULL) {
+            curr_sel = (parsed_log_t *)sel_list->data;
+            free_parsed_sel(curr_sel);
+        }
+        free(sel_list);
+        sel_list = next_list;
+    }
 }
