@@ -40,22 +40,22 @@ extern int init (void)
 {
 	FILE *log_file = NULL;
 
-    my_slurm_debug("starting",1);
+    debug(PLUGIN_NAME "starting");
 	demeter_conf = read_conf();
 	log_file = init_log_file(demeter_conf, false);
 	//check if log file is writable:
 	if (log_file == NULL || demeter_conf == NULL)
 		return (SLURM_ERROR);
-	my_slurm_debug("log file initialized", 2);
+	debug2(PLUGIN_NAME "log file initialized");
 	fclose(log_file);
 	write_log_to_file(demeter_conf, "demeter started", INFO, 0);
-	my_slurm_debug("started, thank god!", 1);
+	info(PLUGIN_NAME "started, thank god!");
     return (SLURM_SUCCESS);
 }
 
 extern void fini (void)
 {
-    my_slurm_debug("stopping", 1);
+    debug(PLUGIN_NAME "stopping");
 	free_log_list(gathered_logs);
 	free_sel_list(gathered_sel);
 	free_job_id_info(job_info);
@@ -66,7 +66,7 @@ extern void fini (void)
 			free(demeter_conf->log_file_path);
 		free(demeter_conf);
 	}
-	my_slurm_debug("stopped", 1);
+	info(PLUGIN_NAME "stopped");
 }
 
 // USED
@@ -131,48 +131,12 @@ extern void prep_p_required(prep_call_type_t type, bool *required)
 
 extern int prep_p_prolog_slurmctld(int rc, uint32_t job_id)
 {
-    my_slurm_debug("prolog Slurmctld (this shoudn't happend)", 2);
+    debug2(PLUGIN_NAME "prolog Slurmctld (this shoudn't happend)");
     return (SLURM_SUCCESS);
 }
 
 extern int prep_p_epilog_slurmctld(int rc, uint32_t job_id)
 {
-    my_slurm_debug("epilog Slurmctld (this shoudn't happend)", 2);
+    debug2(PLUGIN_NAME "epilog Slurmctld (this shoudn't happend)");
     return (SLURM_SUCCESS);
-}
-
-
-// TOOLS
-//___________________________________________________________________________________________________________________________________________
-void my_slurm_info(char *message)
-{
-	slurm_info(PLUGIN_NAME "%s", message);
-}
-
-void my_slurm_debug(char *message, int level)
-{
-	switch (level) {
-	case 1:
-		debug(PLUGIN_NAME "%s", message);
-		break;
-	case 2:
-		debug2(PLUGIN_NAME "%s", message);
-		break;
-	case 3:
-		debug3(PLUGIN_NAME "%s", message);
-		break;
-	case 4:
-		debug4(PLUGIN_NAME "%s", message);
-		break;
-	case 5:
-		debug5(PLUGIN_NAME "%s", message);
-		break;
-	default:
-		break;
-	}
-}
-
-void my_slurm_error(char *message)
-{
-	slurm_perror(message);
 }
