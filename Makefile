@@ -14,34 +14,14 @@ SLURM_BUILD_DIR = /root/rpmbuild/BUILD/slurm-$(SLURM_BUILD)
 PLUGIN_TYPE = prep
 PLUGIN_NAME = demeter
 PLUGIN_FILE = $(PLUGIN_TYPE)_$(PLUGIN_NAME).so
-LIB_FILE = lib$(PLUGIN_NAME).so
+DEMETER_LIB_DIR = /home/atos_projects/lib_demeter
+DEMETER_RUN_PATH = /shared/
 
-SRC_FILES = src/demeter.c									\
-			src/gatherers/gather_cgroup.c					\
-			src/gatherers/gather_logs.c						\
-			src/gatherers/gather_sel.c						\
-				src/gatherers/cgroup/get_from_files.c		\
-				src/gatherers/logs/gather_kernel_logs.c		\
-				src/gatherers/logs/gather_slurm_logs.c		\
-				src/gatherers/logs/read_logs.c				\
-				src/gatherers/logs/get_log_time.c			\
-				src/gatherers/sel/gather_sel_logs.c			\
-				src/gatherers/sel/handle_sel.c				\
-			src/loggers/logger.c							\
-				src/loggers/cgroup/log_cgroup.c				\
-				src/loggers/parsed_logs/log_parsed_logs.c	\
-				src/loggers/parsed_sel/log_sel.c			\
-			src/tools/is_log_empty.c						\
-			src/tools/read_conf.c							\
-			src/tools/linked_list.c							\
-			src/tools/handle_log_level.c					\
-				src/tools/free/im_free.c					\
-				src/tools/get/get_job_info.c				\
-				src/tools/get/get_time_str.c				\
+SRC_FILES = src/demeter.c
 
 CC      = gcc
-CFLAGS  ?= -Wall -fPIC -g -I$(SLURM_INC_DIR) -I$(SLURM_BUILD_DIR) -Iinclude
-LDFLAGS ?= -shared -L.
+CFLAGS  ?= -Wall -fPIC -g -I$(SLURM_INC_DIR) -I$(SLURM_BUILD_DIR) -Iinclude -I$(DEMETER_LIB_DIR)/include -Wl,-rpath=$(DEMETER_RUN_PATH)
+LDFLAGS ?= -shared -L. -L$(DEMETER_LIB_DIR) -ldemeter
 
 all: $(PLUGIN_FILE)
 
@@ -52,12 +32,6 @@ $(PLUGIN_FILE): $(SRC_FILES)
 
 send: all
 	scp $(PLUGIN_FILE) my_vm:/home/compose_fake_taranis/plugin/
-
-lib:
-	cp $(PLUGIN_FILE) $(LIB_FILE)
-
-send_lib: all lib
-	scp $(LIB_FILE) my_vm:/home/compose_fake_taranis/shared/
 
 clean:
 	rm -f $(PLUGIN_FILE)
