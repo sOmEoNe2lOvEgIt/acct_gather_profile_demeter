@@ -52,6 +52,7 @@ typedef struct cgroup_data_s { // Cgroup gathered data for each job step || job.
 typedef struct job_id_info_s {
     uint job_id; // Id from current job when setup propperly.
     uint uid; // User id from current job when setup propperly.
+    uint step_id; // Id from current job step when setup propperly.
     time_t start_time; // "Start time for job", actually time of
     //execution of the acct_gather_profile_p_node_step_start function in the plugin.
     // Used to verify that logs gathered are logs that are timestamped in job runtime.

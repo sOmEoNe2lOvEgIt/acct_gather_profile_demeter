@@ -14,6 +14,7 @@ SLURM_BUILD_DIR = /root/rpmbuild/BUILD/slurm-$(SLURM_BUILD)
 PLUGIN_TYPE = prep
 PLUGIN_NAME = demeter
 PLUGIN_FILE = $(PLUGIN_TYPE)_$(PLUGIN_NAME).so
+LIB_FILE = lib$(PLUGIN_NAME).so
 
 SRC_FILES = src/demeter.c									\
 			src/gatherers/gather_cgroup.c					\
@@ -40,7 +41,7 @@ SRC_FILES = src/demeter.c									\
 
 CC      = gcc
 CFLAGS  ?= -Wall -fPIC -g -I$(SLURM_INC_DIR) -I$(SLURM_BUILD_DIR) -Iinclude
-LDFLAGS ?= --shared -L.
+LDFLAGS ?= -shared -L.
 
 all: $(PLUGIN_FILE)
 
@@ -52,7 +53,14 @@ $(PLUGIN_FILE): $(SRC_FILES)
 send: all
 	scp $(PLUGIN_FILE) my_vm:/home/compose_fake_taranis/plugin/
 
+lib:
+	cp $(PLUGIN_FILE) $(LIB_FILE)
+
+send_lib: all lib
+	scp $(LIB_FILE) my_vm:/home/compose_fake_taranis/shared/
+
 clean:
 	rm -f $(PLUGIN_FILE)
+	rm -f $(LIB_FILE)
 
 re: clean all

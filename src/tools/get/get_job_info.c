@@ -19,6 +19,7 @@ job_id_info_t *get_job_info(job_env_t* job)
     }
     job_info->job_id = job->jobid;
     job_info->uid = job->uid;
+    job_info->step_id = job->step_id;
     time(&job_info->start_time);
     return (job_info);
 }

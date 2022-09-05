@@ -88,7 +88,7 @@ extern int prep_p_epilog(job_env_t *job_env, slurm_cred_t *cred)
 	gathered_logs = gather_logs(demeter_conf, job_info, cgroup_data);
 	write_log_to_file(demeter_conf, "call to gather_sel", DEBUG, 3);
 	gathered_sel = gather_sel(demeter_conf, job_info, cgroup_data);
-	log_cgroup(cgroup_data, job_info, demeter_conf);
+	// log_cgroup(cgroup_data, job_info, demeter_conf);
 	log_parsed_logs(gathered_logs, demeter_conf);
 	log_parsed_sel(gathered_sel, demeter_conf);
 	return (SLURM_SUCCESS);

@@ -29,7 +29,7 @@ void get_mem_max_usage(cgroup_data_t *cgroup_data, job_id_info_t *job_info, deme
     sprintf(cgroup_path, "/sys/fs/cgroup/memory/slurm/uid_%u/job_%u/memory.max_usage_in_bytes", job_info->uid, job_info->job_id);
     file = fopen(cgroup_path, "r");
     if (file == NULL) {
-        write_log_to_file(conf, "Could not open cgroup file", WARNING, 0);
+        write_log_to_file(conf, "Could not open cgroup file", DEBUG, 0);
         return;
     }
     write_log_to_file(conf, "Getting max memory usage", DEBUG, 99);
@@ -48,7 +48,7 @@ void get_oom_status(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter
     sprintf(cgroup_path, "/sys/fs/cgroup/memory/slurm/uid_%u/job_%u/memory.oom_control", job_info->uid, job_info->job_id);
     file = fopen(cgroup_path, "r");
     if (file == NULL) {
-        write_log_to_file(conf, "Could not open cgroup file", WARNING, 1);
+        write_log_to_file(conf, "Could not open cgroup file", DEBUG, 1);
         return;
     }
     write_log_to_file(conf, "Getting oom status", DEBUG, 99);
@@ -73,7 +73,7 @@ void get_cpuset(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_con
     sprintf(cgroup_path, "/sys/fs/cgroup/cpuset/slurm/uid_%u/job_%u/cpuset.cpu_exclusive", job_info->uid, job_info->job_id);
     file = fopen(cgroup_path, "r");
     if (file == NULL) {
-        write_log_to_file(conf, "Could not open cgroup file", WARNING, 0);
+        write_log_to_file(conf, "Could not open cgroup file", DEBUG, 0);
         return;
     }
     write_log_to_file(conf, "Getting cpuset", DEBUG, 99);
@@ -84,7 +84,7 @@ void get_cpuset(cgroup_data_t *cgroup_data, job_id_info_t *job_info, demeter_con
     sprintf(cgroup_path, "/sys/fs/cgroup/cpuset/slurm/uid_%u/job_%u/cpuset.effective_cpus", job_info->uid, job_info->job_id);
     file = fopen(cgroup_path, "r");
     if (file == NULL) {
-        write_log_to_file(conf, "Could not open cgroup file", WARNING, 0);
+        write_log_to_file(conf, "Could not open cgroup file", DEBUG, 0);
         return;
     }
     write_log_to_file(conf, "Getting effective cpus", DEBUG, 99);
