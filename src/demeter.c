@@ -14,6 +14,7 @@
 #include "src/common/cgroup.h"
 #include "src/common/xmalloc.h"
 #include "demeter.h"
+#include "demeter_perf_querry.h"
 
 // GLOBAL VARIABLES
 //___________________________________________________________________________________________________________________________________________
@@ -77,6 +78,7 @@ extern int prep_p_prolog(job_env_t *job, slurm_cred_t *cred)
 	if (job == NULL)
 		return (SLURM_ERROR);
 	job_info = get_job_info(job);
+	get_perf_data(demeter_conf);
 	return (SLURM_SUCCESS);
 }
 
@@ -91,6 +93,7 @@ extern int prep_p_epilog(job_env_t *job_env, slurm_cred_t *cred)
 	// log_cgroup(cgroup_data, job_info, demeter_conf);
 	log_parsed_logs(gathered_logs, demeter_conf);
 	log_parsed_sel(gathered_sel, demeter_conf);
+	get_perf_data(demeter_conf);
 	return (SLURM_SUCCESS);
 }
 
