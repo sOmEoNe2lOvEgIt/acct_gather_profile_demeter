@@ -34,6 +34,7 @@ static cgroup_data_t *cgroup_data = NULL;
 static linked_list_t *gathered_logs = NULL;
 static linked_list_t *gathered_sel = NULL;
 static perf_data_t *gathered_perf_data = NULL;
+static perf_data_t *gathered_perf_data_diff = NULL;
 static demeter_conf_t *demeter_conf = NULL;
 
 // PLUGIN INITIALIZATION AND EXIT FUNCTIONS
@@ -63,6 +64,7 @@ extern void fini (void)
 	free_job_id_info(job_info);
 	free_cgroup(cgroup_data);
 	free_perf_count(gathered_perf_data);
+	free_perf_count(gathered_perf_data_diff);
 	write_log_to_file(demeter_conf, "demeter stopped", INFO, 0);
 	if (demeter_conf != NULL) {
 		if (demeter_conf->log_file_path != NULL)
@@ -93,6 +95,7 @@ extern int prep_p_epilog(job_env_t *job_env, slurm_cred_t *cred)
 	write_log_to_file(demeter_conf, "call to gather_sel", DEBUG, 3);
 	gathered_sel = gather_sel(demeter_conf, job_info, cgroup_data);
 	// log_cgroup(cgroup_data, job_info, demeter_conf);
+	gathered_perf_data_diff = gather_ib_diff(gathered_perf_data);
 	log_parsed_logs(gathered_logs, demeter_conf);
 	log_parsed_sel(gathered_sel, demeter_conf);
 	return (SLURM_SUCCESS);
