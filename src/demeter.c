@@ -14,7 +14,7 @@
 #include "src/common/cgroup.h"
 #include "src/common/xmalloc.h"
 #include "demeter.h"
-#include "demeter_perf_querry.h"
+#include "gather_ib.h"
 
 // GLOBAL VARIABLES
 //___________________________________________________________________________________________________________________________________________
@@ -33,6 +33,7 @@ static job_id_info_t *job_info = NULL;
 static cgroup_data_t *cgroup_data = NULL;
 static linked_list_t *gathered_logs = NULL;
 static linked_list_t *gathered_sel = NULL;
+static perf_data_t *gathered_perf_data = NULL;
 static demeter_conf_t *demeter_conf = NULL;
 
 // PLUGIN INITIALIZATION AND EXIT FUNCTIONS
@@ -61,6 +62,7 @@ extern void fini (void)
 	free_sel_list(gathered_sel);
 	free_job_id_info(job_info);
 	free_cgroup(cgroup_data);
+	free_perf_count(gathered_perf_data);
 	write_log_to_file(demeter_conf, "demeter stopped", INFO, 0);
 	if (demeter_conf != NULL) {
 		if (demeter_conf->log_file_path != NULL)
@@ -78,7 +80,7 @@ extern int prep_p_prolog(job_env_t *job, slurm_cred_t *cred)
 	if (job == NULL)
 		return (SLURM_ERROR);
 	job_info = get_job_info(job);
-	get_perf_data(demeter_conf);
+	gathered_perf_data = gather_ib();
 	return (SLURM_SUCCESS);
 }
 
@@ -93,7 +95,6 @@ extern int prep_p_epilog(job_env_t *job_env, slurm_cred_t *cred)
 	// log_cgroup(cgroup_data, job_info, demeter_conf);
 	log_parsed_logs(gathered_logs, demeter_conf);
 	log_parsed_sel(gathered_sel, demeter_conf);
-	get_perf_data(demeter_conf);
 	return (SLURM_SUCCESS);
 }
 

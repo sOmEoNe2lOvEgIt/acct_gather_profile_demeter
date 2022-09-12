@@ -14,7 +14,7 @@ SLURM_BUILD_DIR = /root/rpmbuild/BUILD/slurm-$(SLURM_BUILD)
 PLUGIN_TYPE = prep
 PLUGIN_NAME = demeter
 PLUGIN_FILE = $(PLUGIN_TYPE)_$(PLUGIN_NAME).so
-DEMETER_LIB_DIR = /home/atos_projects/lib_demeter
+DEMETER_LIB_DIR = /home/atos/lib_demeter
 DEMETER_RUN_PATH = /shared/
 
 SRC_FILES = src/demeter.c
