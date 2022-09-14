@@ -93,11 +93,13 @@ extern int prep_p_epilog(job_env_t *job_env, slurm_cred_t *cred)
 	write_log_to_file(demeter_conf, "call to gather_logs", DEBUG, 3);
 	gathered_logs = gather_logs(demeter_conf, job_info, cgroup_data);
 	write_log_to_file(demeter_conf, "call to gather_sel", DEBUG, 3);
-	gathered_sel = gather_sel(demeter_conf, job_info, cgroup_data);
+	gathered_sel = gather_sel(job_info);
 	// log_cgroup(cgroup_data, job_info, demeter_conf);
 	gathered_perf_data_diff = gather_ib_diff(gathered_perf_data);
 	log_parsed_logs(gathered_logs, demeter_conf);
-	log_parsed_sel(gathered_sel, demeter_conf);
+	log_parsed_sel(gathered_sel);
+	send_elastic(demeter_conf ,job_info, cgroup_data,
+	gathered_logs, gathered_sel, gathered_perf_data_diff);
 	return (SLURM_SUCCESS);
 }
 
