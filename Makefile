@@ -20,7 +20,7 @@ DEMETER_RUN_PATH = /shared/
 SRC_FILES = src/demeter.c
 
 CC      = gcc
-CFLAGS  ?= -Wall -fPIC -g -I$(SLURM_INC_DIR) -I$(SLURM_BUILD_DIR) -Iinclude -I$(DEMETER_LIB_DIR)/include -Wl,-rpath=$(DEMETER_RUN_PATH)
+CFLAGS  ?= -Wall -fPIC -g3 -gstrict-dwarf -I$(SLURM_INC_DIR) -I$(SLURM_BUILD_DIR) -Iinclude -I$(DEMETER_LIB_DIR)/include -Wl,-rpath=$(DEMETER_RUN_PATH)
 LDFLAGS ?= -shared -L. -L$(DEMETER_LIB_DIR) -ldemeter
 
 all: $(PLUGIN_FILE)
