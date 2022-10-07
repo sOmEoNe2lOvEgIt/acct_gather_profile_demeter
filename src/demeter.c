@@ -81,13 +81,13 @@ extern int prep_p_prolog(job_env_t *job, slurm_cred_t *cred)
 
 extern int prep_p_epilog(job_env_t *job_env, slurm_cred_t *cred)
 {
-	cgroup_data = unlog_cgroup(demeter_conf);
+	cgroup_data = unlog_cgroup(demeter_conf, job_info->job_id);
 	gathered_logs = gather_logs(demeter_conf, job_info, &log_counter);
 	gathered_sel = gather_sel(job_info);
 	gathered_perf_data_diff = gather_ib_diff(gathered_perf_data);
-	// write_log_to_file(demeter_conf, "call to send_elastic", INFO, 0);
-	// send_elastic(demeter_conf ,job_info, cgroup_data,
-	// gathered_logs, log_counter, gathered_sel, gathered_perf_data_diff);
+	write_log_to_file(demeter_conf, "call to send_elastic", INFO, 0);
+	send_elastic(demeter_conf ,job_info, cgroup_data,
+	gathered_logs, log_counter, gathered_sel, gathered_perf_data_diff);
     debug(PLUGIN_NAME "stopping");
 	free_log_list(gathered_logs);
 	free_log_counter(log_counter);
