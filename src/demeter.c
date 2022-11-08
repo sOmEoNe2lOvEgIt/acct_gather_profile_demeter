@@ -30,12 +30,10 @@ void (*prolog_slurmctld_callback)(int rc, uint32_t job_id) = NULL;
 void (*epilog_slurmctld_callback)(int rc, uint32_t job_id) = NULL;
 //Data used by the plugin.
 static job_id_info_t *job_info = NULL;
-static linked_list_t *cgroup_data = NULL;
-static linked_list_t *gathered_logs = NULL;
-static log_counter_t *log_counter = NULL;
-static linked_list_t *gathered_sel = NULL;
-static perf_data_t *gathered_perf_data = NULL;
-static perf_data_t *gathered_perf_data_diff = NULL;
+static linked_list_t *cgroup_data = NULL, *gathered_sys_logs = NULL,
+*gathered_sel = NULL, *gathered_slurm_logs = NULL;
+static log_counter_t *sys_log_counter = NULL, *slurm_log_counter = NULL;
+static perf_data_t *gathered_perf_data = NULL, *gathered_perf_data_diff = NULL;
 static demeter_conf_t *demeter_conf = NULL;
 
 // PLUGIN INITIALIZATION AND EXIT FUNCTIONS
@@ -82,15 +80,20 @@ extern int prep_p_prolog(job_env_t *job, slurm_cred_t *cred)
 extern int prep_p_epilog(job_env_t *job_env, slurm_cred_t *cred)
 {
 	cgroup_data = unlog_cgroup(demeter_conf, job_info->job_id);
-	gathered_logs = gather_logs(demeter_conf, job_info, &log_counter);
+	gathered_sys_logs = gather_all_sys_logs(demeter_conf, job_info, &sys_log_counter);
+	gathered_slurm_logs = gather_all_slurm_logs(demeter_conf, job_info, &slurm_log_counter);
 	gathered_sel = gather_sel(job_info);
 	gathered_perf_data_diff = gather_ib_diff(gathered_perf_data);
 	write_log_to_file(demeter_conf, "call to send_elastic", INFO, 0);
 	send_elastic(demeter_conf ,job_info, cgroup_data,
-	gathered_logs, log_counter, gathered_sel, gathered_perf_data_diff);
+	gathered_slurm_logs, slurm_log_counter,
+	gathered_sys_logs, sys_log_counter,
+	gathered_sel, gathered_perf_data_diff);
     debug(PLUGIN_NAME "stopping");
-	free_log_list(gathered_logs);
-	free_log_counter(log_counter);
+	free_log_list(gathered_slurm_logs);
+	free_log_list(gathered_sys_logs);
+	free_log_counter(slurm_log_counter);
+	free_log_counter(sys_log_counter);
 	free_sel_list(gathered_sel);
 	free_job_id_info(job_info);
 	free_cgroup_list(cgroup_data);
