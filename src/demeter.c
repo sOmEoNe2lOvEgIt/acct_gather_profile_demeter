@@ -20,7 +20,7 @@
 // GLOBAL VARIABLES
 //___________________________________________________________________________________________________________________________________________
 //setting required variables for slurm:
-#define DEMETER_PLUGIN_NAME "prep/demeter :"
+#define DEMETER_PLUGIN_NAME "prep/demeter: "
 const char plugin_name[] = "Demeter godess of data harvest.";
 const char plugin_type[] = "prep/demeter";
 const uint32_t plugin_version = SLURM_VERSION_NUMBER;
