@@ -20,13 +20,13 @@
 // GLOBAL VARIABLES
 //___________________________________________________________________________________________________________________________________________
 //setting required variables for slurm:
-#define PLUGIN_NAME "prep/demeter: "
+#define DEMETER_PLUGIN_NAME "prep/demeter :"
 const char plugin_name[] = "Demeter godess of data harvest.";
 const char plugin_type[] = "prep/demeter";
 const uint32_t plugin_version = SLURM_VERSION_NUMBER;
 //Disable the plugin for controller:
-static bool have_prolog_slurmctld = false;
-static bool have_epilog_slurmctld = false;
+// static bool have_prolog_slurmctld = false;
+// static bool have_epilog_slurmctld = false;
 void (*prolog_slurmctld_callback)(int rc, uint32_t job_id) = NULL;
 void (*epilog_slurmctld_callback)(int rc, uint32_t job_id) = NULL;
 //Data used by the plugin.
@@ -43,16 +43,16 @@ extern int init (void)
 {
     FILE *log_file = NULL;
 
-    debug(PLUGIN_NAME "starting");
+    debug(DEMETER_PLUGIN_NAME "starting");
     demeter_conf = read_conf();
     log_file = init_log_file(demeter_conf, false);
     //check if log file is writable:
     if (log_file == NULL || demeter_conf == NULL)
         return (SLURM_ERROR);
-    debug2(PLUGIN_NAME "log file initialized");
+    debug2(DEMETER_PLUGIN_NAME "log file initialized");
     fclose(log_file);
     write_log_to_file(demeter_conf, "demeter started", INFO, 0);
-    info(PLUGIN_NAME "started, thank god!");
+    info(DEMETER_PLUGIN_NAME "started, thank god!");
     return (SLURM_SUCCESS);
 }
 
@@ -63,7 +63,7 @@ extern void fini (void)
             free(demeter_conf->log_file_path);
         free(demeter_conf);
     }
-    info(PLUGIN_NAME "stopped");
+    info(DEMETER_PLUGIN_NAME "stopped");
 }
 
 // USED
@@ -93,7 +93,7 @@ extern int prep_p_epilog(job_env_t *job_env, slurm_cred_t *cred)
     gathered_slurm_logs, slurm_log_counter,
     gathered_sys_logs, sys_log_counter,
     gathered_sel, gathered_perf_data_diff);
-    debug(PLUGIN_NAME "stopping");
+    debug(DEMETER_PLUGIN_NAME "stopping");
     free_log_list(gathered_slurm_logs);
     free_log_list(gathered_sys_logs);
     free_log_counter(slurm_log_counter);
@@ -111,10 +111,10 @@ extern int prep_p_epilog(job_env_t *job_env, slurm_cred_t *cred)
 
 extern void prep_p_register_callbacks(prep_callbacks_t *callbacks)
 {
-    if (!(prolog_slurmctld_callback = callbacks->prolog_slurmctld))
-        have_prolog_slurmctld = false;
-    if (!(epilog_slurmctld_callback = callbacks->epilog_slurmctld))
-        have_epilog_slurmctld = false;
+    // if (!(prolog_slurmctld_callback = callbacks->prolog_slurmctld))
+    //     have_prolog_slurmctld = false;
+    // if (!(epilog_slurmctld_callback = callbacks->epilog_slurmctld))
+    //     have_epilog_slurmctld = false;
 }
 
 extern void prep_p_required(prep_call_type_t type, bool *required)
@@ -143,12 +143,12 @@ extern void prep_p_required(prep_call_type_t type, bool *required)
 
 extern int prep_p_prolog_slurmctld(int rc, uint32_t job_id)
 {
-    debug2(PLUGIN_NAME "prolog Slurmctld (this shoudn't happend)");
+    debug2(DEMETER_PLUGIN_NAME "prolog Slurmctld (this shoudn't happend)");
     return (SLURM_SUCCESS);
 }
 
 extern int prep_p_epilog_slurmctld(int rc, uint32_t job_id)
 {
-    debug2(PLUGIN_NAME "epilog Slurmctld (this shoudn't happend)");
+    debug2(DEMETER_PLUGIN_NAME "epilog Slurmctld (this shoudn't happend)");
     return (SLURM_SUCCESS);
 }
