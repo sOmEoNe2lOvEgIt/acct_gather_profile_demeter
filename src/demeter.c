@@ -80,9 +80,7 @@ extern int prep_p_prolog(job_env_t *job, slurm_cred_t *cred)
 
 extern int prep_p_epilog(job_env_t *job_env, slurm_cred_t *cred)
 {
-    if (!demeter_conf || !demeter_conf->using_task_plugin)
-        write_log_to_file(demeter_conf,"task plugin not used (in prep)", INFO, 0);
-    else
+    if (demeter_conf && demeter_conf->using_task_plugin)
         cgroup_data = unlog_cgroup(demeter_conf, job_info->job_id);
     gathered_sys_logs = gather_all_sys_logs(demeter_conf, job_info, &sys_log_counter);
     gathered_slurm_logs = gather_all_slurm_logs(demeter_conf, job_info, &slurm_log_counter);
