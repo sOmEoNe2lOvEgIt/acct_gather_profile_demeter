@@ -2,4 +2,4 @@
 # Demeter
 prep_demeter is a slurm plugin made for harvesting data on your cluster's nodes like info about ram usage, oom state, parsed logs, etc...
 
-Go to https://github.com/sOmEoNe2lOvEgIt/lib_demeter for more info.
+Go to https://github.com/sOmEoNe2lOvEgIt/demeter for more info.
