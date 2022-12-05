@@ -14,7 +14,7 @@ PLUGIN_FILE = $(PLUGIN_TYPE)_$(PLUGIN_NAME).so
 SRC_FILES = src/demeter.c
 
 CC      = gcc
-CFLAGS  ?= -Wall -fPIC -g3 -gstrict-dwarf -I$(SLURM_INC_DIR) -Iinclude -I$(DEMETER_LIB_DIR)/include -Wl,-rpath=$(DEMETER_RUN_PATH)
+CFLAGS  ?= -std=gnu11 -Wall -fPIC -g3 -gstrict-dwarf -I$(SLURM_INC_DIR) -Iinclude -I$(DEMETER_LIB_DIR)/include -Wl,-rpath=$(DEMETER_RUN_PATH)
 LDFLAGS ?= -shared -L. -L$(DEMETER_LIB_DIR) -ldemeter
 
 all: $(PLUGIN_FILE)
