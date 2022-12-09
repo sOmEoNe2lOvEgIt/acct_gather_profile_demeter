@@ -87,6 +87,8 @@ extern int prep_p_epilog(job_env_t *job_env, slurm_cred_t *cred)
     gathered_sel = gather_sel(job_info);
     gathered_perf_data_diff = gather_ib_diff(gathered_perf_data);
     write_log_to_file(demeter_conf, "call to send_elastic", INFO, 0);
+    send_logs_elastic(demeter_conf, job_info, gathered_slurm_logs,
+    gathered_sys_logs, gathered_sel);
     send_elastic(demeter_conf, job_info, cgroup_data,
     gathered_slurm_logs, slurm_log_counter,
     gathered_sys_logs, sys_log_counter,
